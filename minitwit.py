@@ -9,7 +9,7 @@
     :license: BSD, see LICENSE for more details.
 """
 
-import re
+import os
 import time
 import sqlite3
 from hashlib import md5
@@ -21,7 +21,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 
 # configuration
-DATABASE = '/tmp/minitwit.db'
+PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
+#DATABASE = '/tmp/minitwit.db'
+DATABASE = os.path.join(PROJECT_ROOT, 'tmp', 'minitwit.db')
 PER_PAGE = 30
 DEBUG = True
 SECRET_KEY = 'development key'
@@ -38,7 +40,7 @@ def connect_db():
 def init_db():
     """Creates the database tables."""
     with closing(connect_db()) as db:
-        with app.open_resource('schema.sql') as f:
+        with app.open_resource('schema.sql', mode='r', encoding='utf-8') as f:
             db.cursor().executescript(f.read())
         db.commit()
 
