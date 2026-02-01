@@ -13,7 +13,7 @@ import os
 import time
 import sqlite3
 from hashlib import md5
-from datetime import datetime
+from datetime import datetime, UTC
 from contextlib import closing
 from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash
@@ -23,7 +23,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # configuration
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 #DATABASE = '/tmp/minitwit.db'
-DATABASE = os.path.join(PROJECT_ROOT, 'tmp', 'minitwit.db')
+DATABASE = os.path.join(PROJECT_ROOT, 'tmp', 'minitwit')
 PER_PAGE = 30
 DEBUG = True
 SECRET_KEY = 'development key'
@@ -61,7 +61,7 @@ def get_user_id(username):
 
 def format_datetime(timestamp):
     """Format a timestamp for display."""
-    return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d @ %H:%M')
+    return datetime.fromtimestamp(timestamp, UTC).strftime('%Y-%m-%d @ %H:%M')
 
 
 def gravatar_url(email, size=80):
