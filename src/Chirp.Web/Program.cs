@@ -116,41 +116,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
 
-// Required for GitHub OAuth
-builder.Services.AddSession();
-
 // -----------------------------------------------------------------------------
 // Authentication providers
 // -----------------------------------------------------------------------------
 
-if (builder.Environment.IsEnvironment("Testing"))
-{
     // Use simple cookie authentication in testing environment
     builder.Services.AddAuthentication().AddCookie();
-}
-else
-{
-    // Configure GitHub OAuth authentication
-    var githubClientId = builder.Configuration["authentication:github:clientId"];
-    var githubClientSecret = builder.Configuration["authentication:github:clientSecret"];
-
-    if (!string.IsNullOrWhiteSpace(githubClientId) &&
-        !string.IsNullOrWhiteSpace(githubClientSecret))
-    {
-        builder.Services.AddAuthentication()
-            .AddGitHub(o =>
-            {
-                o.ClientId = githubClientId!;
-                o.ClientSecret = githubClientSecret!;
-                o.CallbackPath = "/signin-github";
-                o.Scope.Add("user:email");
-
-                // Map GitHub claims to ASP.NET Identity claims
-                o.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
-                o.ClaimActions.MapJsonKey("urn:github:login", "login");
-            });
-    }
-}
 
 // -----------------------------------------------------------------------------
 // Build application
@@ -213,7 +184,6 @@ if (app.Environment.IsEnvironment("testing"))
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("AllowChirp");
-app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
