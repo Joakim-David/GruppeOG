@@ -20,6 +20,9 @@ using Newtonsoft.Json;
 using Org.OpenAPITools.Attributes;
 using Org.OpenAPITools.Models;
 
+using Chirp.Services;
+using System.Threading.Tasks;
+
 namespace Org.OpenAPITools.Controllers
 { 
     /// <summary>
@@ -28,6 +31,16 @@ namespace Org.OpenAPITools.Controllers
     [ApiController]
     public class MinitwitApiController : ControllerBase
     { 
+        private readonly ICheepService _cheepService;
+        private readonly IAuthorService _authorService;
+
+        public MinitwitApiController(ICheepService cheepService, IAuthorService authorService)
+        {
+            _cheepService = cheepService;
+            _authorService = authorService;
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -125,6 +138,7 @@ namespace Org.OpenAPITools.Controllers
             ? JsonConvert.DeserializeObject<List<Message>>(exampleJson)
             : default;
             //TODO: Change the data returned
+            //var data = Chirp.Services.
             return new ObjectResult(example);
         }
 
@@ -211,7 +225,7 @@ namespace Org.OpenAPITools.Controllers
         [ValidateModelState]
         [SwaggerOperation("PostMessagesPerUser")]
         [SwaggerResponse(statusCode: 403, type: typeof(ErrorResponse), description: "Unauthorized - Must include correct Authorization header")]
-        public virtual IActionResult PostMessagesPerUser([FromRoute (Name = "username")][Required]string username, [FromHeader (Name = "Authorization")][Required()]string authorization, [FromBody]PostMessage payload, [FromQuery (Name = "latest")]int? latest)
+        public virtual async Task<IActionResult> PostMessagesPerUser([FromRoute (Name = "username")][Required]string username, [FromHeader (Name = "Authorization")][Required()]string authorization, [FromBody]PostMessage payload, [FromQuery (Name = "latest")]int? latest)
         {
 
             //TODO: Uncomment the next line to return response 204 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -219,7 +233,8 @@ namespace Org.OpenAPITools.Controllers
             //TODO: Uncomment the next line to return response 403 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(403, default);
 
-            throw new NotImplementedException();
+            await _cheepService.CreateCheepForUser(username, payload.Content);
+            return StatusCode(204);
         }
 
         /// <summary>

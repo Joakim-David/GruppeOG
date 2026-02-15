@@ -18,6 +18,8 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Org.OpenAPITools.Converters;
 
+using Chirp.Services;
+
 namespace Org.OpenAPITools.Models
 { 
     /// <summary>
