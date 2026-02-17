@@ -68,6 +68,20 @@ public class CheepService : ICheepService
     }
 
     /// <summary>
+    /// Retrieves the last N number publicly visible cheeps.
+    /// </summary>
+    /// <param name="amount">The number to retrieve.</param>
+    /// <returns>
+    /// A list of public cheeps.
+    /// </returns>
+    public async Task<List<CheepDTO>> GetNLatestCheeps(int amount)
+    {
+        List<CheepDTO> cheeps;
+        cheeps = await _cheepRepository.ReadCheeps(null, 0, amount);
+        return cheeps;
+    }
+
+    /// <summary>
     /// Retrieves cheeps for a user's timeline, including their own cheeps
     /// and cheeps from authors they follow.
     /// </summary>
