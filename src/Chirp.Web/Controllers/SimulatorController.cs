@@ -89,6 +89,50 @@ public class SimulatorController : ControllerBase
        return Ok(new { latest = _latest });
     }
 
+    [HttpGet("msgs/{username}")]
+    [HttpPost("msgs/{username}")]
+    public async Task<IActionResult> MessagesPerUser(
+        string username, 
+        [FromHeader(Name = "authorization")] string auth,  
+        [FromQuery] int no = 100,
+        [FromQuery] int? latest = null)
+    {
+        if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
+        if (latest.HasValue) _latest = latest.Value;
+        if (Request.Method == "GET")
+        {
+            // Check if the user from argument exists
+            var author = await _authorService.GetAuthorByName(username);
+            if (author == null) 
+                return StatusCode(404, new { status = 404, error_msg = "Author not found." });
+            
+            // Get cheeps from the user - reuse the existing method from cheepservice
+            var cheeps = await _cheepService.GetUserTimelineCheeps(username, username, 1);
+
+            var filteredMsgs = cheeps.Take(no).Select(c => new
+            {
+                content = c.Text,
+                pub_date = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
+                user = c.Author.Name
+            });
+            return Ok(filteredMsgs);
+        }
+        else
+        {
+            try
+            {
+                var requestData = await JsonSerializer.DeserializeAsync<JsonElement>(Request.Body);
+                string content = requestData.GetProperty("content").GetString();
+
+                await _cheepService.CreateCheepForUser(username, content);
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { status = 500, error_msg = ex.Message });
+            }
+        }
+    }
 
     private Author CreateUser()
     {
