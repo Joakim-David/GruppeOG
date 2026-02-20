@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Chirp.Core;
 using System.Text.Json;
+using System.Reflection;
 
 // Controllers/SimulatorController.cs
 [ApiController]
@@ -46,6 +47,22 @@ public class SimulatorController : ControllerBase
         
         var cheeps = await _cheepService.GetNLatestCheeps(no);
         return StatusCode(200, cheeps);
+    }
+
+
+    [HttpGet("fllws/{username}")]
+    public async Task<IActionResult> GetFollows(
+        [FromHeader(Name = "Authorization")] string auth,
+        [FromQuery] int no = 100,
+        [FromQuery] int? latest = null)
+    {
+        if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
+        if (username = null)
+        {
+            return StautsCode(404, new{status = 404, error_msg = "The user doesn't exist"});
+        }
+
+        
     }
 
     [HttpPost("register")]
