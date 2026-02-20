@@ -85,6 +85,49 @@ public class SimulatorController : ControllerBase
             return StatusCode(500, new { status = 500, error_msg = ex.Message });
         }
     }
+
+   		[HttpPost("{username}/follow")]
+   		public async Task<IActionResult> FollowUser(string username,
+        [FromHeader(Name = "Authorization")] string auth,
+        [FromBody] JsonElement request,
+        [FromQuery] int? latest = null)
+    	{
+        if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
+        try
+        {
+            // Extract the "follow" field from the JSON body.
+            // The simulator sends { "follow": "targetUserName" } to indicate
+            // which user should start following the user in the route.
+            string follower = request.GetProperty("follow").GetString()!;
+
+            
+            //Creating the Follow relationship via AuthorRepository
+            await _authorService.FollowUser(follower, username);
+
+            // returns StatusCode(204) when a user is created successfully.
+            return StatusCode(204);
+        }
+        catch (InvalidOperationException ex)
+        {
+            // AuthorService throws InvalidOperationExceodption for rule violations:
+            //   - "user with username: '{name}' doesn't exist" (either user not found)
+            //   - "You cannot follow yourself"
+            // Return 400 with the error message — same anonymous object pattern
+            return StatusCode(400, new { status = 400, error_msg = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            // Catch-all for unexpected errors
+            // Catch for unexpected errors. outer try/catch which returns 500 with the exception message.
+            // This ensures the simulator always gets a structured JSON response rather than an unhandled exception page
+            System.Console.WriteLine($"Exception: {ex}");
+            return StatusCode(500, new { status = 500, error_msg = ex.Message });
+        }                    
+    }
+                                    
+	
+
+
     private Author CreateUser()
     {
         try
