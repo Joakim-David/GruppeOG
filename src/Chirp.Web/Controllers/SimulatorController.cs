@@ -65,11 +65,6 @@ public class SimulatorController : ControllerBase
             string username = request.GetProperty("username").GetString()!;
 
             var result = await _authorService.GetAuthorByName(username);
-
-            if (!result.Succeeded)
-            {
-                return StatusCode(400, new{ status = 400, error_msg = "Username already taken"});
-            }
         }
         catch(Exception e)
         {
@@ -86,6 +81,8 @@ public class SimulatorController : ControllerBase
         var follows = await _cheepService.GetFollowing(username);
         return StatusCode(200, follows);
     }
+
+
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] JsonElement request, [FromQuery] int? latest = null)
