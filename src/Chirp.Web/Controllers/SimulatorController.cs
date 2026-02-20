@@ -1,4 +1,5 @@
 using Chirp.Services;
+using Chirp.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
@@ -97,53 +98,28 @@ public class SimulatorController : ControllerBase
     }
 
 
-   		[HttpPost("fllws/{username}")]
-    public async Task<IActionResult> FollowUser(
+    [HttpGet("fllws/{username}")]
+    public async Task<IActionResult> GetFollows(
         string username,
         [FromHeader(Name = "Authorization")] string auth,
-        [FromBody] JsonElement request,
+        [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
         if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
-        if (latest.HasValue)
-        {
-            _latest = latest.Value;
-        }
+        if (latest.HasValue) _latest = latest.Value;
 
         try
         {
-            // Check if the request contains a "follow" key.
-            // If so, the we wants {username} to follow the specified user.
-            if (request.TryGetProperty("follow", out JsonElement followElement))
-            {
-                string targetUser = followElement.GetString()!;
+            List<AuthorDTO> following = await _authorService.GetFollowing(username);
+            var followNames = following
+                .Take(no)
+                .Select(a => a.Name)  
+                .ToList();
 
-                // FollowUser(follower, target): makes the first user follow the second.
-                // {username} is the user performing the follow action (from the URL).
-                // targetUser is who they want to follow (from the JSON body).
-                await _authorService.FollowUser(username, targetUser);
-                return StatusCode(204);
-            }
-
-            // Check if the request contains an "unfollow" key.
-            // If so, the simulator wants {username} to unfollow the specified user.
-            if (request.TryGetProperty("unfollow", out JsonElement unfollowElement))
-            {
-                string targetUser = unfollowElement.GetString()!;
-
-                // UnfollowUser(follower, target): makes the first user stop following the second.
-                await _authorService.UnfollowUser(username, targetUser);
-                return StatusCode(204);
-            }
-
-            // If neither "follow" nor "unfollow" key is present, the request is malformed.
-            return StatusCode(400, new { status = 400, error_msg = "Missing 'follow' or 'unfollow' in request body" });
+            return Ok(new { follows = followNames });
         }
         catch (InvalidOperationException ex)
         {
-            // AuthorService throws InvalidOperationException for:
-            //   - "user with username: '{name}' doesn't exist"
-            //   - "You cannot follow yourself"
             return StatusCode(400, new { status = 400, error_msg = ex.Message });
         }
         catch (Exception ex)
