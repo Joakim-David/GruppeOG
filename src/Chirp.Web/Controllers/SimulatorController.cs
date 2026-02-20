@@ -5,6 +5,9 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using Chirp.Core;
 using System.Text.Json;
 using System.Reflection;
+using System.Diagnostics;
+using System.Net.Cache;
+using System.Net;
 
 // Controllers/SimulatorController.cs
 [ApiController]
@@ -53,16 +56,35 @@ public class SimulatorController : ControllerBase
     [HttpGet("fllws/{username}")]
     public async Task<IActionResult> GetFollows(
         [FromHeader(Name = "Authorization")] string auth,
+        [FromBody] JsonElement request,
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
+        try
+        {
+            string username = request.GetProperty("username").GetString()!;
+
+            var result = await _authorService.GetAuthorByName(username);
+
+            if (!result.Succeeded)
+            {
+                return StatusCode(400, new{ status = 400, error_msg = "Username already taken"});
+            }
+        }
+        catch(Exception e)
+        {
+            System.Console.WriteLine($"Exception: {e}");
+            return StatusCode(500, new { status = 500, error_msg = e.Message });
+        }
+
         if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
         if (username = null)
         {
-            return StautsCode(404, new{status = 404, error_msg = "The user doesn't exist"});
+            return StautsCode(404, new{status = 404, error_msg = "The user doesn't exist. No list of followed users were retrieved."});
         }
 
-        
+        var follows = await _cheepService.GetFollowing(username);
+        return StatusCode(200, follows);
     }
 
     [HttpPost("register")]
