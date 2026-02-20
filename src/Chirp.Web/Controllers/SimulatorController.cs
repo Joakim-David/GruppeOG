@@ -99,7 +99,8 @@ public class SimulatorController : ControllerBase
 
 
     [HttpGet("fllws/{username}")]
-    public async Task<IActionResult> GetFollows(
+    [HttpPost("fllws/{username}")]
+    public async Task<IActionResult> Follows(
         string username,
         [FromHeader(Name = "Authorization")] string auth,
         [FromQuery] int no = 100,
@@ -107,28 +108,41 @@ public class SimulatorController : ControllerBase
     {
         if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
         if (latest.HasValue) _latest = latest.Value;
+        if (Request.Method == "GET")
+        {
+            
+        } else 
+        {
+            try
+            {
+                var requestData = await JsonSerializer.DeserializeAsync<JsonElement>(Request.Body);
 
-        try
-        {
-            List<AuthorDTO> following = await _authorService.GetFollowing(username);
-            var followNames = following
-                .Take(no)
-                .Select(a => a.Name)  
-                .ToList();
+                if (requestData.TryGetProperty("follow", out JsonElement followElement))
+                {
+                    string targetUser = followElement.GetString()!;
+                    await _authorService.FollowUser(username, targetUser);
+                    return StatusCode(204);
+                }
 
-            return Ok(new { follows = followNames });
-        }
-        catch (InvalidOperationException ex)
-        {
-            return StatusCode(400, new { status = 400, error_msg = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            System.Console.WriteLine($"Exception: {ex}");
-            return StatusCode(500, new { status = 500, error_msg = ex.Message });
+                if (requestData.TryGetProperty("unfollow", out JsonElement unfollowElement))
+                {
+                    string targetUser = unfollowElement.GetString()!;
+                    await _authorService.UnfollowUser(username, targetUser);
+                    return StatusCode(204);
+                }
+
+                return StatusCode(400, new { status = 400, error_msg = "Missing 'follow' or 'unfollow' in request body" });
+            }
+            catch (InvalidOperationException)
+            {
+                return StatusCode(404);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { status = 500, error_msg = ex.Message });
+            }
         }
     }
-
                                     
 	
 
