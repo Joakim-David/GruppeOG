@@ -109,9 +109,17 @@ public class SimulatorController : ControllerBase
         if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
         if (latest.HasValue) _latest = latest.Value;
         if (Request.Method == "GET")
-        {
-            
-        } else 
+            try
+            {
+                var follows = await _authorService.GetFollowing(username);
+                return StatusCode(200, follows);
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine($"Exception: {e}");
+                return StatusCode(403, new { status = 403, error_msg = "Could not retrieve user..." });
+            }
+        else 
         {
             try
             {
