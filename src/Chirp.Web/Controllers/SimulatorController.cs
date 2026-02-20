@@ -71,7 +71,7 @@ public class SimulatorController : ControllerBase
             if (!result.Succeeded)
             {
                 // Check if it's a "username already taken" error
-                var usernameTakenError = result.Errors.FirstOrDefault(e => e.Code == "DuplicateUserName");
+                var usernameTakenError = result.Errors.FirstOrDefault(e => e.Code == "DupligcateUserName");
                 if (usernameTakenError != null)
                 {
                     return StatusCode(400, new { status = 400, error_msg = "Username already taken" });
@@ -105,7 +105,10 @@ public class SimulatorController : ControllerBase
         [FromQuery] int? latest = null)
     {
         if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
-        UpdateLatest(latest);
+        if (latest.HasValue)
+        {
+            _latest = latest.Value;
+        }
 
         try
         {
