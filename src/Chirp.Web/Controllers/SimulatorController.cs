@@ -10,6 +10,7 @@ using System.Text.Json;
 [Route("")]
 public class SimulatorController : ControllerBase
 {
+    private static int _latest = 0;
     private const string SimulatorAuth = "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh";
 
     private bool IsAuthorized(string authHeader)
@@ -43,6 +44,8 @@ public class SimulatorController : ControllerBase
         [FromQuery] int? latest = null)
     {
         if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
+
+        if (latest.HasValue) _latest = latest.Value;
         
         var cheeps = await _cheepService.GetNLatestCheeps(no);
         return StatusCode(200, cheeps);
@@ -51,6 +54,8 @@ public class SimulatorController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] JsonElement request, [FromQuery] int? latest = null)
     {
+        if (latest.HasValue) _latest = latest.Value;
+
         try
         {
             string username = request.GetProperty("username").GetString()!;
@@ -85,6 +90,12 @@ public class SimulatorController : ControllerBase
             return StatusCode(500, new { status = 500, error_msg = ex.Message });
         }
     }
+    [HttpGet("latest")]
+    public async Task<IActionResult> GetLatest()
+    {
+        return Ok(new { latest = _latest });
+    }
+
 
    		[HttpPost("fllws/{username}")]
     public async Task<IActionResult> FollowUser(
