@@ -16,8 +16,8 @@ public class SimulatorController : ControllerBase
 {
     private const string SimulatorAuth = "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh";
 
-    private bool IsAuthorized(string authHeader)
-        => authHeader == SimulatorAuth;
+    //private bool IsAuthorized(string authHeader)
+    //    => authHeader == SimulatorAuth;
 
     private readonly ICheepService _cheepService;
     private readonly IAuthorService _authorService;
@@ -46,7 +46,7 @@ public class SimulatorController : ControllerBase
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
+        //if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
         
         var cheeps = await _cheepService.GetNLatestCheeps(no);
         return StatusCode(200, cheeps);
@@ -60,7 +60,7 @@ public class SimulatorController : ControllerBase
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        try
+       /* try
         {
             string username = request.GetProperty("username").GetString()!;
 
@@ -70,17 +70,27 @@ public class SimulatorController : ControllerBase
         {
             System.Console.WriteLine($"Exception: {e}");
             return StatusCode(500, new { status = 500, error_msg = e.Message });
-        }
+        }*/
+        string username = request.GetProperty("username").GetString()!;
+        var result = await _authorService.GetAuthorByName(username);
 
-        if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
-        if (username = null)
+        //if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
+       /* if (username = null)
         {
             return StautsCode(404, new{status = 404, error_msg = "The user doesn't exist. No list of followed users were retrieved."});
-        }
+        }*/
 
-        var follows = await _cheepService.GetFollowing(username);
+        var follows = await _authorService.GetFollowing(username);
         return StatusCode(200, follows);
     }
+
+     /*[HttpGet("fllws-test")]
+    public IActionResult testGetFollows()
+    {
+        return Ok(new { GetFollows("username") });
+    }*/
+
+
 
 
 
