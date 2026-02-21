@@ -57,9 +57,14 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<Author>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
-
-    // Allow spaces in usernames
     options.User.AllowedUserNameCharacters += " ";
+    
+    // Add these lines to relax password requirements
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 1;
 })
 .AddEntityFrameworkStores<CheepDBContext>();
 
@@ -69,6 +74,7 @@ builder.Services.AddDefaultIdentity<Author>(options =>
 
 // Razor Pages support
 builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 
 // Repository layer (data access)
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
@@ -188,7 +194,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Razor Pages routing
+app.MapControllers();
 app.MapRazorPages();
+
 
 // Start the application
 app.Run();

@@ -25,6 +25,15 @@ public interface ICheepService
     Task<List<CheepDTO>> GetPublicCheeps(int pageNumber, string? searchQuery);
 
     /// <summary>
+    /// Retrieves the last N number publicly visible cheeps.
+    /// </summary>
+    /// <param name="amount">The number to retrieve.</param>
+    /// <returns>
+    /// A list of public cheeps.
+    /// </returns>
+    Task<List<CheepDTO>> GetNLatestCheeps(int amount);
+
+    /// <summary>
     /// Retrieves cheeps saved by a specific user.
     /// </summary>
     /// <param name="userName">Username of the user.</param>

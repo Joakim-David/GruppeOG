@@ -471,3 +471,6 @@ ehthumbs_vista.db
 
 # Vim temporary swap files
 *.swp
+
+# Vagrant file
+.vagrant

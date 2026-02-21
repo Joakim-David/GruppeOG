@@ -1,4 +1,4 @@
-﻿@page "/{author}"
+﻿@page "/{author:regex(^(?!register$|msgs$|fllws$|latest$).+$)}"
 @model Chirp.Web.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Chirp!";
