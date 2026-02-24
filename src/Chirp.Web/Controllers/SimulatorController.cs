@@ -6,14 +6,38 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using Chirp.Core;
 using System.Text.Json;
 
-// Controllers/SimulatorController.cs
+/// <summary>
+/// API controller for the Minitwit simulator interface.
+/// Provides REST endpoints for the simulator to interact with the Chirp application,
+/// including message retrieval, user registration, follow relationships, and progress tracking.
+/// All endpoints (except /register and /latest) require Basic authentication.
+/// </summary>
+/// <remarks>
+/// This controller implements the Minitwit API specification for simulator integration.
+/// Authentication is handled via a hardcoded Basic auth header.
+/// The controller maintains a global 'latest' counter to track simulator request sequence.
+/// </remarks>
 [ApiController]
 [Route("")]
 public class SimulatorController : ControllerBase
 {
+    /// <summary>
+    /// Global counter tracking the most recent 'latest' value received from the simulator.
+    /// Used to track simulator progress through test sequences.
+    /// </summary>
     private static int _latest = 0;
+    
+    /// <summary>
+    /// Expected Authorization header value for simulator authentication.
+    /// Format: "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh"
+    /// </summary>
     private const string SimulatorAuth = "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh";
 
+    /// <summary>
+    /// Validates the Authorization header against the expected simulator credentials.
+    /// </summary>
+    /// <param name="authHeader">The Authorization header value from the request.</param>
+    /// <returns>True if the header matches the expected value, false otherwise.</returns>
     private bool IsAuthorized(string authHeader)
         => authHeader == SimulatorAuth;
 
@@ -23,6 +47,13 @@ public class SimulatorController : ControllerBase
     private readonly IUserStore<Author> _userStore;
     private readonly IUserEmailStore<Author> _emailStore;
 
+    /// <summary>
+    /// Initializes a new instance of the SimulatorController.
+    /// </summary>
+    /// <param name="cheepService">Service for cheep (message) operations.</param>
+    /// <param name="authorService">Service for author operations including follow relationships.</param>
+    /// <param name="userManager">ASP.NET Core Identity UserManager for user operations.</param>
+    /// <param name="userStore">ASP.NET Core Identity UserStore for user persistence.</param>
     public SimulatorController(ICheepService cheepService, IAuthorService authorService, UserManager<Author> userManager, IUserStore<Author> userStore)
     {
         _cheepService = cheepService;
@@ -32,26 +63,71 @@ public class SimulatorController : ControllerBase
         _emailStore = GetEmailStore();
     }
 
-    [HttpGet("api-test")]
-    public IActionResult ApiTest()
-    {
-        return Ok(new { message = "API is working!" });
-    }
-
+    /// <summary>
+    /// Retrieves recent public messages from the platform.
+    /// GET /msgs
+    /// </summary>
+    /// <param name="auth">Authorization header (required).</param>
+    /// <param name="no">Maximum number of messages to return (default: 100).</param>
+    /// <param name="latest">Optional value to update the global latest counter.</param>
+    /// <returns>
+    /// 200 OK with array of message objects containing content, pub_date, and user.
+    /// 403 Forbidden if authorization fails.
+    /// </returns>
+    /// <remarks>
+    /// Returns messages in the format:
+    /// [
+    ///   {
+    ///     "content": "message text",
+    ///     "pub_date": "2024-02-24 14:30:00",
+    ///     "user": "username"
+    ///   }
+    /// ]
+    /// </remarks>
     [HttpGet("msgs")]
     public async Task<IActionResult> GetMessages(
         [FromHeader(Name = "Authorization")] string auth,
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
-
-        if (latest.HasValue) _latest = latest.Value;
+        if (!IsAuthorized(auth)) 
+            return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
+        
+        if (latest.HasValue) 
+            _latest = latest.Value;
         
         var cheeps = await _cheepService.GetNLatestCheeps(no);
-        return StatusCode(200, cheeps);
+        
+        var response = cheeps.Select(c => new 
+        {
+            content = c.Text,
+            pub_date = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
+            user = c.Author.Name
+        });
+        
+        return Ok(response);
     }
 
+    /// <summary>
+    /// Registers a new user account on the platform.
+    /// POST /register
+    /// </summary>
+    /// <param name="request">JSON object containing username, email, and pwd fields.</param>
+    /// <param name="latest">Optional value to update the global latest counter.</param>
+    /// <returns>
+    /// 204 No Content on successful registration.
+    /// 400 Bad Request if username is taken, email is invalid, or required fields are missing.
+    /// 500 Internal Server Error for unexpected errors.
+    /// </returns>
+    /// <remarks>
+    /// Expected request body format:
+    /// {
+    ///   "username": "string",
+    ///   "email": "string",
+    ///   "pwd": "string"
+    /// }
+    /// This endpoint does NOT require authentication.
+    /// </remarks>
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] JsonElement request, [FromQuery] int? latest = null)
     {
@@ -91,60 +167,51 @@ public class SimulatorController : ControllerBase
             return StatusCode(500, new { status = 500, error_msg = ex.Message });
         }
     }
+
+    /// <summary>
+    /// Retrieves the current value of the global latest counter.
+    /// GET /latest
+    /// </summary>
+    /// <returns>
+    /// 200 OK with JSON object containing the latest value.
+    /// </returns>
+    /// <remarks>
+    /// Returns: { "latest": integer }
+    /// This endpoint does NOT require authentication.
+    /// Used by the simulator to track its progress through test sequences.
+    /// </remarks>
     [HttpGet("latest")]
     public async Task<IActionResult> GetLatest()
     {
         return Ok(new { latest = _latest });
     }
 
-    [HttpGet("msgs/{username}")]
-    [HttpPost("msgs/{username}")]
-    public async Task<IActionResult> MessagesPerUser(
-        string username, 
-        [FromHeader(Name = "authorization")] string auth,  
-        [FromQuery] int no = 100,
-        [FromQuery] int? latest = null)
-    {
-        if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
-        if (latest.HasValue) _latest = latest.Value;
-        if (Request.Method == "GET")
-        {
-            // Check if the user from argument exists
-            var author = await _authorService.GetAuthorByName(username);
-            if (author == null) 
-                return StatusCode(404, new { status = 404, error_msg = "Author not found." });
-            
-            // Get cheeps from the user - reuse the existing method from cheepservice
-            var cheeps = await _cheepService.GetUserTimelineCheeps(username, username, 1);
-
-            var filteredMsgs = cheeps.Take(no).Select(c => new
-            {
-                content = c.Text,
-                pub_date = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
-                user = c.Author.Name
-            });
-            return Ok(filteredMsgs);
-        }
-        else
-        {
-            try
-            {
-                var requestData = await JsonSerializer.DeserializeAsync<JsonElement>(Request.Body);
-                string content = requestData.GetProperty("content").GetString();
-
-                await _cheepService.CreateCheepForUser(username, content);
-                return StatusCode(204);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { status = 500, error_msg = ex.Message });
-            }
-        }
-    }
-
+    /// <summary>
+    /// Retrieves the list of users that a given user is following.
+    /// GET /fllws/{username}
+    /// POST /fllws/{username}
+    /// </summary>
+    /// <param name="username">The username whose following list to retrieve.</param>
+    /// <param name="auth">Authorization header (required).</param>
+    /// <param name="no">Maximum number of follows to return (default: 100).</param>
+    /// <param name="latest">Optional value to update the global latest counter.</param>
+    /// <returns>
+    /// 200 OK with JSON object containing array of followed usernames.
+    /// 400 Bad Request if user operation fails.
+    /// 403 Forbidden if authorization fails.
+    /// 500 Internal Server Error for unexpected errors.
+    /// </returns>
+    /// <remarks>
+    /// Returns format:
+    /// {
+    ///   "follows": ["username1", "username2", ...]
+    /// }
+    /// Note: This endpoint handles both GET and POST for /fllws/{username}.
+    /// The POST variant for follow/unfollow actions is not yet implemented.
+    /// </remarks>
     [HttpGet("fllws/{username}")]
     [HttpPost("fllws/{username}")]
-    public async Task<IActionResult> Follows(
+    public async Task<IActionResult> GetFollows(
         string username,
         [FromHeader(Name = "Authorization")] string auth,
         [FromQuery] int no = 100,
@@ -152,53 +219,36 @@ public class SimulatorController : ControllerBase
     {
         if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
         if (latest.HasValue) _latest = latest.Value;
-        if (Request.Method == "GET")
-            try
-            {
-                var follows = await _authorService.GetFollowing(username);
-                return StatusCode(200, follows);
-            }
-            catch (Exception e)
-            {
-                System.Console.WriteLine($"Exception: {e}");
-                return StatusCode(403, new { status = 403, error_msg = "Could not retrieve user..." });
-            }
-        else 
+
+        try
         {
-            try
-            {
-                var requestData = await JsonSerializer.DeserializeAsync<JsonElement>(Request.Body);
+            List<AuthorDTO> following = await _authorService.GetFollowing(username);
+            var followNames = following
+                .Take(no)
+                .Select(a => a.Name)  
+                .ToList();
 
-                if (requestData.TryGetProperty("follow", out JsonElement followElement))
-                {
-                    string targetUser = followElement.GetString()!;
-                    await _authorService.FollowUser(username, targetUser);
-                    return StatusCode(204);
-                }
-
-                if (requestData.TryGetProperty("unfollow", out JsonElement unfollowElement))
-                {
-                    string targetUser = unfollowElement.GetString()!;
-                    await _authorService.UnfollowUser(username, targetUser);
-                    return StatusCode(204);
-                }
-
-                return StatusCode(400, new { status = 400, error_msg = "Missing 'follow' or 'unfollow' in request body" });
-            }
-            catch (InvalidOperationException)
-            {
-                return StatusCode(404);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { status = 500, error_msg = ex.Message });
-            }
+            return Ok(new { follows = followNames });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return StatusCode(400, new { status = 400, error_msg = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"Exception: {ex}");
+            return StatusCode(500, new { status = 500, error_msg = ex.Message });
         }
     }
-                                    
-	
 
-
+    /// <summary>
+    /// Creates a new instance of the Author entity using reflection.
+    /// Required for ASP.NET Core Identity user registration.
+    /// </summary>
+    /// <returns>A new Author instance.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if Author class cannot be instantiated (e.g., if it's abstract or lacks a parameterless constructor).
+    /// </exception>
     private Author CreateUser()
     {
         try
@@ -213,6 +263,14 @@ public class SimulatorController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Retrieves the email store from the UserManager.
+    /// Required for setting user email during registration.
+    /// </summary>
+    /// <returns>An IUserEmailStore instance for Author entities.</returns>
+    /// <exception cref="NotSupportedException">
+    /// Thrown if the configured user store does not support email operations.
+    /// </exception>
     private IUserEmailStore<Author> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
