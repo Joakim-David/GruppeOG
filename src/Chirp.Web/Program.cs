@@ -155,9 +155,6 @@ using (var scope = app.Services.CreateScope())
     {
         dbContext.Database.Migrate();
     }
-
-    // Seed initial application data
-    DbInitializer.SeedDatabase(dbContext);
 }
 
 // -----------------------------------------------------------------------------
