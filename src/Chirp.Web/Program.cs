@@ -95,7 +95,7 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 /// Allowed origins are read from configuration.
 /// Credentials are enabled to support OAuth authentication.
 /// </remarks>
-var allowedOrigins = builder.Configuration
+/*var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
     .Get<string[]>()!;
 
@@ -109,7 +109,7 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
-
+*/
 // -----------------------------------------------------------------------------
 // Cookie and session configuration
 // -----------------------------------------------------------------------------
