@@ -95,7 +95,7 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 /// Allowed origins are read from configuration.
 /// Credentials are enabled to support OAuth authentication.
 /// </remarks>
-var allowedOrigins = builder.Configuration
+/*var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
     .Get<string[]>()!;
 
@@ -109,7 +109,7 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
-
+*/
 // -----------------------------------------------------------------------------
 // Cookie and session configuration
 // -----------------------------------------------------------------------------
@@ -135,6 +135,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
+
 // -----------------------------------------------------------------------------
 // Database initialization and seeding
 // -----------------------------------------------------------------------------
@@ -142,21 +143,26 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var dbContext = services.GetRequiredService<CheepDBContext>();
+    var context = services.GetRequiredService<CheepDBContext>();
 
-    // Optional: used if Identity users are seeded
-    var userManager = services.GetRequiredService<UserManager<Author>>();
-
-    if (builder.Environment.IsEnvironment("testing"))
+    if (app.Environment.IsEnvironment("testing"))
     {
-        dbContext.Database.EnsureCreated();
+        context.Database.EnsureCreated();
     }
     else
     {
-        dbContext.Database.Migrate();
+        var dbPath = "/app/data/chirp.db";
+        if (!File.Exists(dbPath))
+        {
+            context.Database.EnsureCreated(); 
+            DbInitializer.SeedDatabase(context);
+        }
+        else
+        {
+            context.Database.Migrate(); 
+        }
     }
 }
-
 // -----------------------------------------------------------------------------
 // HTTP request pipeline configuration
 // -----------------------------------------------------------------------------
