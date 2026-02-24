@@ -67,7 +67,7 @@ Vagrant.configure("2") do |config|
         --restart unless-stopped \
         -p 7273:7273 \
         -v /home/vagrant/chirp-data:/app/data \
-        chirp-app
+        bennyboomblaster/minitwitimage:latest
 
       echo "================================================================="
       echo "=                            DONE                               ="
