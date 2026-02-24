@@ -474,3 +474,8 @@ ehthumbs_vista.db
 
 # Vagrant file
 .vagrant
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
