@@ -74,10 +74,11 @@ public class CheepService : ICheepService
     /// <returns>
     /// A list of public cheeps.
     /// </returns>
-    public async Task<List<CheepDTO>> GetNLatestCheeps(int amount)
+    public async Task<List<CheepDTO>> GetNLatestCheeps(string? username, int amount)
     {
         List<CheepDTO> cheeps;
-        cheeps = await _cheepRepository.ReadCheeps(null, 0, amount);
+        if (username == null) cheeps = await _cheepRepository.ReadCheeps(null, 0, amount);
+        else cheeps = await _cheepRepository.ReadCheeps(username, 0, amount);
         return cheeps;
     }
 

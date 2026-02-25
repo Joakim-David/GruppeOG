@@ -31,7 +31,7 @@ public interface ICheepService
     /// <returns>
     /// A list of public cheeps.
     /// </returns>
-    Task<List<CheepDTO>> GetNLatestCheeps(int amount);
+    Task<List<CheepDTO>> GetNLatestCheeps(string? username, int amount);
 
     /// <summary>
     /// Retrieves cheeps saved by a specific user.
