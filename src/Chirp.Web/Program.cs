@@ -56,7 +56,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 /// </summary>
 builder.Services.AddDefaultIdentity<Author>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedAccount = false;
     options.User.AllowedUserNameCharacters += " ";
     
     // Add these lines to relax password requirements
