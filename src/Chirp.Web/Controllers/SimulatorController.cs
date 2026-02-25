@@ -96,7 +96,7 @@ public class SimulatorController : ControllerBase
         if (latest.HasValue) 
             _latest = latest.Value;
         
-        var cheeps = await _cheepService.GetNLatestCheeps(no);
+        var cheeps = await _cheepService.GetNLatestCheeps(null, no);
         
         var response = cheeps.Select(c => new 
         {
@@ -106,6 +106,64 @@ public class SimulatorController : ControllerBase
         });
         
         return Ok(response);
+    }
+
+    [HttpGet("msgs/{username}")]
+    [HttpPost("msgs/{username}")]
+    public async Task<IActionResult> MessagesPerUser(
+        string username, 
+        [FromHeader(Name = "Authorization")] string auth,  
+        [FromQuery] int no = 100,
+        [FromQuery] int? latest = null)
+    {
+        if (!IsAuthorized(auth)) 
+            return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
+        
+        if (latest.HasValue) 
+            _latest = latest.Value;
+        
+        if (Request.Method == "GET")
+        {
+            try
+            {
+                // Get cheeps from the user
+                var author = await _authorService.GetAuthorByName(username);
+                if (author == null) 
+                    return NotFound();
+                
+                var cheeps = await _cheepService.GetNLatestCheeps(username, no);
+                
+                var response = cheeps.Select(c => new
+                {
+                    content = c.Text,
+                    pub_date = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
+                    user = c.Author.Name
+                });
+                
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(404, ex);
+            }
+        }
+        else // POST
+        {
+            try
+            {
+                var requestData = await JsonSerializer.DeserializeAsync<JsonElement>(Request.Body);
+                string content = requestData.GetProperty("content").GetString()!;
+                
+                await _cheepService.CreateCheepForUser(username, content);
+                
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex}");
+                return StatusCode(500, new { status = 500, error_msg = ex.Message });
+            }
+        }
     }
 
     /// <summary>
