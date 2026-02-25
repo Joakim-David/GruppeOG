@@ -144,6 +144,13 @@ public class SimulatorController : ControllerBase
             await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
             
             var result = await _userManager.CreateAsync(user, pwd);
+
+            if (result.Succeeded)
+            {
+                // Auto-confirm email for API registrations
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                await _userManager.ConfirmEmailAsync(user, token);
+            }
             
             if (!result.Succeeded)
             {
