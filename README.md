@@ -1,1 +1,1 @@
-The Chirp! Azure site can be found here: https://bdsagroup17chirpremotedb-dhg0b9fpaya0afa0.swedencentral-01.azurewebsites.net
+The Chirp! URL: http://142.93.169.145:7273
