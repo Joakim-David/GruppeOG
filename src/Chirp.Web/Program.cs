@@ -155,7 +155,7 @@ using (var scope = app.Services.CreateScope())
         if (!File.Exists(dbPath))
         {
             context.Database.EnsureCreated(); 
-            DbInitializer.SeedDatabase(context);
+            // DbInitializer.SeedDatabase(context); | Commented out to start db empty and not with seed
         }
         else
         {
