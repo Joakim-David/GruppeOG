@@ -276,7 +276,7 @@ public class SimulatorController : ControllerBase
     /// </remarks>
     [HttpGet("fllws/{username}")]
     [HttpPost("fllws/{username}")]
-    public async Task<IActionResult> GetFollows(
+    public async Task<IActionResult> Follow(
         string username,
         [FromHeader(Name = "Authorization")] string auth,
         [FromQuery] int no = 100,
@@ -300,7 +300,7 @@ public class SimulatorController : ControllerBase
 
                 if (requestData.TryGetProperty("unfollow", out JsonElement unfollowElement))
                 {
-                    string targetUser = followElement.GetString()!;
+                    string targetUser = unfollowElement.GetString()!;
                     await _authorService.UnfollowUser(username, targetUser);
                     return StatusCode(204);
                 }
