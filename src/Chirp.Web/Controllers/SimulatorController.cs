@@ -86,7 +86,7 @@ public class SimulatorController : ControllerBase
     /// </remarks>
     [HttpGet("msgs")]
     public async Task<IActionResult> GetMessages(
-        [FromHeader(Name = "Authorization")] string auth,
+        [FromHeader(Name = "Authorization")] string? auth,
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
@@ -112,7 +112,7 @@ public class SimulatorController : ControllerBase
     [HttpPost("msgs/{username}")]
     public async Task<IActionResult> MessagesPerUser(
         string username, 
-        [FromHeader(Name = "Authorization")] string auth,  
+        [FromHeader(Name = "Authorization")] string? auth,  
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
@@ -128,8 +128,7 @@ public class SimulatorController : ControllerBase
             {
                 // Get cheeps from the user
                 var author = await _authorService.GetAuthorByName(username);
-                if (author == null) 
-                    return NotFound();
+                if (author == null) return NotFound();
                 
                 var cheeps = await _cheepService.GetNLatestCheeps(username, no);
                 
@@ -144,7 +143,8 @@ public class SimulatorController : ControllerBase
             }
             catch (Exception ex)
             {
-                return StatusCode(404, ex);
+                Console.WriteLine($"Exception: {ex}");
+                return NotFound();
             }
         }
         else // POST
@@ -153,6 +153,9 @@ public class SimulatorController : ControllerBase
             {
                 var requestData = await JsonSerializer.DeserializeAsync<JsonElement>(Request.Body);
                 string content = requestData.GetProperty("content").GetString()!;
+
+                var author = await _authorService.GetAuthorByName(username);
+                if (author == null) return NotFound();
                 
                 await _cheepService.CreateCheepForUser(username, content);
                 
@@ -213,7 +216,7 @@ public class SimulatorController : ControllerBase
             if (!result.Succeeded)
             {
                 // Check if it's a "username already taken" error
-                var usernameTakenError = result.Errors.FirstOrDefault(e => e.Code == "DupligcateUserName");
+                var usernameTakenError = result.Errors.FirstOrDefault(e => e.Code == "DuplicateUserName");
                 if (usernameTakenError != null)
                 {
                     return StatusCode(400, new { status = 400, error_msg = "Username already taken" });
@@ -278,7 +281,7 @@ public class SimulatorController : ControllerBase
     [HttpPost("fllws/{username}")]
     public async Task<IActionResult> Follow(
         string username,
-        [FromHeader(Name = "Authorization")] string auth,
+        [FromHeader(Name = "Authorization")] string? auth,
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
@@ -291,22 +294,37 @@ public class SimulatorController : ControllerBase
             {
                 var requestData = await JsonSerializer.DeserializeAsync<JsonElement>(Request.Body);
 
-                if (requestData.TryGetProperty("follow", out JsonElement followElement))
+                if (requestData.TryGetProperty("follow", out JsonElement followElement)) // If request is to follow another user
                 {
                     string targetUser = followElement.GetString()!;
+
+                    // Check if users exists first
+                    var target_author = await _authorService.GetAuthorByName(targetUser);
+                    var user_author = await _authorService.GetAuthorByName(username);
+                    if (target_author == null || user_author == null) 
+                        return NotFound();                    
+
+
                     await _authorService.FollowUser(username, targetUser);
                     return StatusCode(204);
                 }
 
-                if (requestData.TryGetProperty("unfollow", out JsonElement unfollowElement))
+                if (requestData.TryGetProperty("unfollow", out JsonElement unfollowElement)) // If request is to unfollow another user
                 {
                     string targetUser = unfollowElement.GetString()!;
+
+                    // Check if users exists first
+                    var target_author = await _authorService.GetAuthorByName(targetUser);
+                    var user_author = await _authorService.GetAuthorByName(username);
+                    if (target_author == null || user_author == null) 
+                        return NotFound(); 
+
                     await _authorService.UnfollowUser(username, targetUser);
                     return StatusCode(204);
                 }
 
                 return StatusCode(400,
-                    new { status = 400, error_msg = "Missing 'follow' or 'unfollow' in request body" });
+                    new { status = 400, error_msg = "Bad Request" });
             }
             catch (InvalidOperationException)
             {
@@ -322,6 +340,11 @@ public class SimulatorController : ControllerBase
         {
             try
             {
+                 // Check if user exists first
+                var author = await _authorService.GetAuthorByName(username);
+                if (author == null) 
+                    return NotFound();
+
                 List<AuthorDTO> following = await _authorService.GetFollowing(username);
                 var followNames = following
                     .Take(no)
@@ -332,7 +355,7 @@ public class SimulatorController : ControllerBase
             }
             catch (InvalidOperationException ex)
             {
-                return StatusCode(400, new { status = 400, error_msg = ex.Message });
+                return NotFound();
             }
             catch (Exception ex)
             {
