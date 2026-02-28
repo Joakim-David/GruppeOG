@@ -196,9 +196,34 @@ public class SimulatorController : ControllerBase
 
         try
         {
-            string username = request.GetProperty("username").GetString()!;
-            string email = request.GetProperty("email").GetString()!;
-            string pwd = request.GetProperty("pwd").GetString()!;
+            // Validate required fields
+            if (!request.TryGetProperty("username", out JsonElement usernameElement) ||
+                string.IsNullOrWhiteSpace(usernameElement.GetString()))
+            {
+                return StatusCode(400, new { status = 400, error_msg = "Username is required" });
+            }
+
+            if (!request.TryGetProperty("email", out JsonElement emailElement) ||
+                string.IsNullOrWhiteSpace(emailElement.GetString()))
+            {
+                return StatusCode(400, new { status = 400, error_msg = "Email is required" });
+            }
+
+            if (!request.TryGetProperty("pwd", out JsonElement pwdElement) ||
+                string.IsNullOrWhiteSpace(pwdElement.GetString()))
+            {
+                return StatusCode(400, new { status = 400, error_msg = "Password is required" });
+            }
+
+            string username = usernameElement.GetString()!;
+            string email = emailElement.GetString()!;
+            string pwd = pwdElement.GetString()!;
+
+            // Validate email format
+            if (!email.Contains("@") || !email.Contains("."))
+            {
+                return StatusCode(400, new { status = 400, error_msg = "Invalid email format" });
+            }
             
             var user = CreateUser();
             await _userStore.SetUserNameAsync(user, username, CancellationToken.None);
@@ -208,21 +233,18 @@ public class SimulatorController : ControllerBase
 
             if (result.Succeeded)
             {
-                // Auto-confirm email for API registrations
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 await _userManager.ConfirmEmailAsync(user, token);
             }
             
             if (!result.Succeeded)
             {
-                // Check if it's a "username already taken" error
                 var usernameTakenError = result.Errors.FirstOrDefault(e => e.Code == "DuplicateUserName");
                 if (usernameTakenError != null)
                 {
                     return StatusCode(400, new { status = 400, error_msg = "Username already taken" });
                 }
                 
-                // For other errors, return a generic message
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 return StatusCode(400, new { status = 400, error_msg = errors });
             }
@@ -231,8 +253,8 @@ public class SimulatorController : ControllerBase
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine($"Exception: {ex}");
-            return StatusCode(500, new { status = 500, error_msg = ex.Message });
+            System.Console.WriteLine($"UNEXPECTED ERROR in registration: {ex}");
+            return StatusCode(400, new { status = 400, error_msg = "Registration failed" });
         }
     }
 
