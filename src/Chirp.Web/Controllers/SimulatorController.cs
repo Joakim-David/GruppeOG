@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Chirp.Core;
 using System.Text.Json;
+using System.IO;
 
 /// <summary>
 /// API controller for the Minitwit simulator interface.
@@ -20,18 +21,17 @@ using System.Text.Json;
 [ApiController]
 [Route("")]
 public class SimulatorController : ControllerBase
-{
-    /// <summary>
-    /// Global counter tracking the most recent 'latest' value received from the simulator.
-    /// Used to track simulator progress through test sequences.
-    /// </summary>
-    private static int _latest = 0;
-    
+{    
     /// <summary>
     /// Expected Authorization header value for simulator authentication.
     /// Format: "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh"
     /// </summary>
     private const string SimulatorAuth = "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh";
+    private static readonly string LatestFilePath = 
+    Directory.Exists("/app/data") 
+        ? "/app/data/latest.txt"   // Docker/Production
+        : "latest.txt";             // Local development
+    private static readonly object _fileLock = new object();
 
     /// <summary>
     /// Validates the Authorization header against the expected simulator credentials.
@@ -46,6 +46,74 @@ public class SimulatorController : ControllerBase
     private readonly UserManager<Author> _userManager;
     private readonly IUserStore<Author> _userStore;
     private readonly IUserEmailStore<Author> _emailStore;
+
+    /// <summary>
+    /// Reads the latest counter value from the file.
+    /// Returns 0 if file doesn't exist or can't be read.
+    /// </summary>
+private void UpdateLatest(int value)
+{
+    Console.WriteLine($"UpdateLatest called with value: {value}");
+    lock (_fileLock)
+    {
+        try
+        {
+            // Ensure directory exists
+            var directory = Path.GetDirectoryName(LatestFilePath);
+            Console.WriteLine($"Directory path: {directory}");
+            
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Console.WriteLine("Creating directory...");
+                Directory.CreateDirectory(directory);
+            }
+
+            Console.WriteLine($"Writing to file: {LatestFilePath}");
+            System.IO.File.WriteAllText(LatestFilePath, value.ToString());
+            Console.WriteLine($"Successfully wrote {value} to file");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error writing latest: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        }
+    }
+}
+
+private int GetLatestTxt()
+{
+    Console.WriteLine("GetLatest called");
+    lock (_fileLock)
+    {
+        try
+        {
+            Console.WriteLine($"Checking if file exists: {LatestFilePath}");
+            if (System.IO.File.Exists(LatestFilePath))
+            {
+                Console.WriteLine("File exists, reading...");
+                var content = System.IO.File.ReadAllText(LatestFilePath);
+                Console.WriteLine($"File content: '{content}'");
+                
+                if (int.TryParse(content, out int value))
+                {
+                    Console.WriteLine($"Parsed value: {value}");
+                    return value;
+                }
+            }
+            else
+            {
+                Console.WriteLine("File does not exist");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error reading latest: {ex.Message}");
+        }
+        
+        Console.WriteLine("Returning default value 0");
+        return 0;
+    }
+}
 
     /// <summary>
     /// Initializes a new instance of the SimulatorController.
@@ -90,11 +158,10 @@ public class SimulatorController : ControllerBase
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) 
+        if (!IsAuthorized(auth!)) 
             return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
         
-        if (latest.HasValue) 
-            _latest = latest.Value;
+        if (latest.HasValue) UpdateLatest(latest.Value);
         
         var cheeps = await _cheepService.GetNLatestCheeps(null, no);
         
@@ -116,11 +183,10 @@ public class SimulatorController : ControllerBase
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) 
+        if (!IsAuthorized(auth!)) 
             return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
         
-        if (latest.HasValue) 
-            _latest = latest.Value;
+        if (latest.HasValue) UpdateLatest(latest.Value);
         
         if (Request.Method == "GET")
         {
@@ -192,7 +258,7 @@ public class SimulatorController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] JsonElement request, [FromQuery] int? latest = null)
     {
-        if (latest.HasValue) _latest = latest.Value;
+        if (latest.HasValue) UpdateLatest(latest.Value);
 
         try
         {
@@ -273,7 +339,7 @@ public class SimulatorController : ControllerBase
     [HttpGet("latest")]
     public async Task<IActionResult> GetLatest()
     {
-        return Ok(new { latest = _latest });
+        return Ok(new { latest = GetLatestTxt() });
     }
 
     /// <summary>
@@ -307,8 +373,8 @@ public class SimulatorController : ControllerBase
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
-        if (latest.HasValue) _latest = latest.Value;
+        if (!IsAuthorized(auth!)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
+        if (latest.HasValue) UpdateLatest(latest.Value);
 
         if (Request.Method == "POST")
         {
@@ -375,7 +441,7 @@ public class SimulatorController : ControllerBase
 
                 return Ok(new { follows = followNames });
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 return NotFound();
             }
