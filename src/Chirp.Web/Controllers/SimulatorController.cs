@@ -53,46 +53,36 @@ public class SimulatorController : ControllerBase
     /// </summary>
 private void UpdateLatest(int value)
 {
-    Console.WriteLine($"UpdateLatest called with value: {value}");
     lock (_fileLock)
     {
         try
         {
             // Ensure directory exists
             var directory = Path.GetDirectoryName(LatestFilePath);
-            Console.WriteLine($"Directory path: {directory}");
             
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {
-                Console.WriteLine("Creating directory...");
                 Directory.CreateDirectory(directory);
             }
 
-            Console.WriteLine($"Writing to file: {LatestFilePath}");
             System.IO.File.WriteAllText(LatestFilePath, value.ToString());
-            Console.WriteLine($"Successfully wrote {value} to file");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error writing latest: {ex.Message}");
-            Console.WriteLine($"Stack trace: {ex.StackTrace}");
         }
     }
 }
 
 private int GetLatestTxt()
 {
-    Console.WriteLine("GetLatest called");
     lock (_fileLock)
     {
         try
         {
-            Console.WriteLine($"Checking if file exists: {LatestFilePath}");
             if (System.IO.File.Exists(LatestFilePath))
             {
-                Console.WriteLine("File exists, reading...");
                 var content = System.IO.File.ReadAllText(LatestFilePath);
-                Console.WriteLine($"File content: '{content}'");
                 
                 if (int.TryParse(content, out int value))
                 {
@@ -100,17 +90,12 @@ private int GetLatestTxt()
                     return value;
                 }
             }
-            else
-            {
-                Console.WriteLine("File does not exist");
-            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error reading latest: {ex.Message}");
         }
         
-        Console.WriteLine("Returning default value 0");
         return 0;
     }
 }
