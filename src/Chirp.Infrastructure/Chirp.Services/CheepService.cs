@@ -155,7 +155,7 @@ public class CheepService : ICheepService
         {
             Author = author,
             Text = text,
-            TimeStamp = DateTime.UtcNow.AddHours(1)
+            TimeStamp = DateTime.Now
         };
 
         await _cheepRepository.CreateCheep(newCheep);

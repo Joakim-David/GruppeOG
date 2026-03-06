@@ -3,6 +3,7 @@ using System;
 using Chirp.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chirp.Web.Migrations
 {
     [DbContext(typeof(CheepDBContext))]
-    partial class CheepDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251022135405_InitialDBSchema")]
+    partial class InitialDBSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
@@ -24,6 +27,9 @@ namespace Chirp.Web.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("AuthorId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -89,7 +95,11 @@ namespace Chirp.Web.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("message_id");
 
-                    b.Property<int?>("AuthorId")
+                    b.Property<long>("AuthorId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("author_id");
+
+                    b.Property<int?>("AuthorId1")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")
@@ -103,48 +113,9 @@ namespace Chirp.Web.Migrations
 
                     b.HasKey("CheepId");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("AuthorId1");
 
-                    b.ToTable("Cheeps");
-                });
-
-            modelBuilder.Entity("Chirp.Core.Follow", b =>
-                {
-                    b.Property<int>("FollowerId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("FollowingId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("FollowerId", "FollowingId");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("FollowingId");
-
-                    b.ToTable("Follows");
-                });
-
-            modelBuilder.Entity("Chirp.Core.SavedCheep", b =>
-                {
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("CheepId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("time_stamp");
-
-                    b.HasKey("AuthorId", "CheepId");
-
-                    b.HasIndex("CheepId");
-
-                    b.ToTable("SavedCheeps");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -221,11 +192,9 @@ namespace Chirp.Web.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderDisplayName")
@@ -262,11 +231,9 @@ namespace Chirp.Web.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
@@ -280,52 +247,10 @@ namespace Chirp.Web.Migrations
             modelBuilder.Entity("Chirp.Core.Cheep", b =>
                 {
                     b.HasOne("Chirp.Core.Author", "Author")
-                        .WithMany("Cheeps")
-                        .HasForeignKey("AuthorId");
+                        .WithMany("Messages")
+                        .HasForeignKey("AuthorId1");
 
                     b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("Chirp.Core.Follow", b =>
-                {
-                    b.HasOne("Chirp.Core.Author", null)
-                        .WithMany("Following")
-                        .HasForeignKey("AuthorId");
-
-                    b.HasOne("Chirp.Core.Author", "Follower")
-                        .WithMany()
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Chirp.Core.Author", "Following")
-                        .WithMany()
-                        .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Follower");
-
-                    b.Navigation("Following");
-                });
-
-            modelBuilder.Entity("Chirp.Core.SavedCheep", b =>
-                {
-                    b.HasOne("Chirp.Core.Author", "Saver")
-                        .WithMany("SavedCheeps")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Chirp.Core.Cheep", "Cheep")
-                        .WithMany()
-                        .HasForeignKey("CheepId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Cheep");
-
-                    b.Navigation("Saver");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -381,11 +306,7 @@ namespace Chirp.Web.Migrations
 
             modelBuilder.Entity("Chirp.Core.Author", b =>
                 {
-                    b.Navigation("Cheeps");
-
-                    b.Navigation("Following");
-
-                    b.Navigation("SavedCheeps");
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }
