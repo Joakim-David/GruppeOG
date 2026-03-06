@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Chirp.Core;
 using System.Text.Json;
+using System.IO;
 
 /// <summary>
 /// API controller for the Minitwit simulator interface.
@@ -20,18 +21,17 @@ using System.Text.Json;
 [ApiController]
 [Route("")]
 public class SimulatorController : ControllerBase
-{
-    /// <summary>
-    /// Global counter tracking the most recent 'latest' value received from the simulator.
-    /// Used to track simulator progress through test sequences.
-    /// </summary>
-    private static int _latest = 0;
-    
+{    
     /// <summary>
     /// Expected Authorization header value for simulator authentication.
     /// Format: "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh"
     /// </summary>
     private const string SimulatorAuth = "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh";
+    private static readonly string LatestFilePath = 
+    Directory.Exists("/app/data") 
+        ? "/app/data/latest.txt"   // Docker/Production
+        : "latest.txt";             // Local development
+    private static readonly object _fileLock = new object();
 
     /// <summary>
     /// Validates the Authorization header against the expected simulator credentials.
@@ -46,6 +46,59 @@ public class SimulatorController : ControllerBase
     private readonly UserManager<Author> _userManager;
     private readonly IUserStore<Author> _userStore;
     private readonly IUserEmailStore<Author> _emailStore;
+
+    /// <summary>
+    /// Reads the latest counter value from the file.
+    /// Returns 0 if file doesn't exist or can't be read.
+    /// </summary>
+private void UpdateLatest(int value)
+{
+    lock (_fileLock)
+    {
+        try
+        {
+            // Ensure directory exists
+            var directory = Path.GetDirectoryName(LatestFilePath);
+            
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            System.IO.File.WriteAllText(LatestFilePath, value.ToString());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error writing latest: {ex.Message}");
+        }
+    }
+}
+
+private int GetLatestTxt()
+{
+    lock (_fileLock)
+    {
+        try
+        {
+            if (System.IO.File.Exists(LatestFilePath))
+            {
+                var content = System.IO.File.ReadAllText(LatestFilePath);
+                
+                if (int.TryParse(content, out int value))
+                {
+                    Console.WriteLine($"Parsed value: {value}");
+                    return value;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error reading latest: {ex.Message}");
+        }
+        
+        return 0;
+    }
+}
 
     /// <summary>
     /// Initializes a new instance of the SimulatorController.
@@ -90,11 +143,10 @@ public class SimulatorController : ControllerBase
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) 
+        if (!IsAuthorized(auth!)) 
             return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
         
-        if (latest.HasValue) 
-            _latest = latest.Value;
+        if (latest.HasValue) UpdateLatest(latest.Value);
         
         var cheeps = await _cheepService.GetNLatestCheeps(null, no);
         
@@ -116,11 +168,10 @@ public class SimulatorController : ControllerBase
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) 
+        if (!IsAuthorized(auth!)) 
             return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
         
-        if (latest.HasValue) 
-            _latest = latest.Value;
+        if (latest.HasValue) UpdateLatest(latest.Value);
         
         if (Request.Method == "GET")
         {
@@ -192,13 +243,38 @@ public class SimulatorController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] JsonElement request, [FromQuery] int? latest = null)
     {
-        if (latest.HasValue) _latest = latest.Value;
+        if (latest.HasValue) UpdateLatest(latest.Value);
 
         try
         {
-            string username = request.GetProperty("username").GetString()!;
-            string email = request.GetProperty("email").GetString()!;
-            string pwd = request.GetProperty("pwd").GetString()!;
+            // Validate required fields
+            if (!request.TryGetProperty("username", out JsonElement usernameElement) ||
+                string.IsNullOrWhiteSpace(usernameElement.GetString()))
+            {
+                return StatusCode(400, new { status = 400, error_msg = "Username is required" });
+            }
+
+            if (!request.TryGetProperty("email", out JsonElement emailElement) ||
+                string.IsNullOrWhiteSpace(emailElement.GetString()))
+            {
+                return StatusCode(400, new { status = 400, error_msg = "Email is required" });
+            }
+
+            if (!request.TryGetProperty("pwd", out JsonElement pwdElement) ||
+                string.IsNullOrWhiteSpace(pwdElement.GetString()))
+            {
+                return StatusCode(400, new { status = 400, error_msg = "Password is required" });
+            }
+
+            string username = usernameElement.GetString()!;
+            string email = emailElement.GetString()!;
+            string pwd = pwdElement.GetString()!;
+
+            // Validate email format
+            if (!email.Contains("@") || !email.Contains("."))
+            {
+                return StatusCode(400, new { status = 400, error_msg = "Invalid email format" });
+            }
             
             var user = CreateUser();
             await _userStore.SetUserNameAsync(user, username, CancellationToken.None);
@@ -208,21 +284,18 @@ public class SimulatorController : ControllerBase
 
             if (result.Succeeded)
             {
-                // Auto-confirm email for API registrations
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 await _userManager.ConfirmEmailAsync(user, token);
             }
             
             if (!result.Succeeded)
             {
-                // Check if it's a "username already taken" error
                 var usernameTakenError = result.Errors.FirstOrDefault(e => e.Code == "DuplicateUserName");
                 if (usernameTakenError != null)
                 {
                     return StatusCode(400, new { status = 400, error_msg = "Username already taken" });
                 }
                 
-                // For other errors, return a generic message
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 return StatusCode(400, new { status = 400, error_msg = errors });
             }
@@ -231,8 +304,8 @@ public class SimulatorController : ControllerBase
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine($"Exception: {ex}");
-            return StatusCode(500, new { status = 500, error_msg = ex.Message });
+            System.Console.WriteLine($"UNEXPECTED ERROR in registration: {ex}");
+            return StatusCode(400, new { status = 400, error_msg = "Registration failed" });
         }
     }
 
@@ -251,7 +324,7 @@ public class SimulatorController : ControllerBase
     [HttpGet("latest")]
     public async Task<IActionResult> GetLatest()
     {
-        return Ok(new { latest = _latest });
+        return Ok(new { latest = GetLatestTxt() });
     }
 
     /// <summary>
@@ -285,8 +358,8 @@ public class SimulatorController : ControllerBase
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
-        if (latest.HasValue) _latest = latest.Value;
+        if (!IsAuthorized(auth!)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
+        if (latest.HasValue) UpdateLatest(latest.Value);
 
         if (Request.Method == "POST")
         {
@@ -353,7 +426,7 @@ public class SimulatorController : ControllerBase
 
                 return Ok(new { follows = followNames });
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 return NotFound();
             }
