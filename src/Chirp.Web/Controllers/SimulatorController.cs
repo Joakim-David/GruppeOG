@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using Chirp.Core;
 using System.Text.Json;
 
+
 /// <summary>
 /// API controller for the Minitwit simulator interface.
 /// Provides REST endpoints for the simulator to interact with the Chirp application,
