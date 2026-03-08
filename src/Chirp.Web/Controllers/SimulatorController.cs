@@ -7,6 +7,7 @@ using Chirp.Core;
 using System.Text.Json;
 using System.IO;
 
+
 /// <summary>
 /// API controller for the Minitwit simulator interface.
 /// Provides REST endpoints for the simulator to interact with the Chirp application,
