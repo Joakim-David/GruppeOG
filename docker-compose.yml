@@ -1,0 +1,61 @@
+﻿networks:
+  itu-minitwit-network:
+    external: false
+
+services:
+  minitwitserver:
+    image: bennyboomblaster/minitwitimage:latest
+    container_name: chirp
+    ports:
+      - "7273:7273"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db-postgresql-fra1-72367-do-user-33600044-0.e.db.ondigitalocean.com;Port=25060;Database=chirp;Username=doadmin;Password=AVNS_FbDogIgXbauFe7Qayjw;SSL Mode=Require
+    volumes:
+      #- /data/latest.txt:/app/data/latest.txt
+      - ./latest.txt:/app/data/latest.txt
+  #tror network skal froblive itu-minitwit-network til helges tests men idk?
+    networks:
+      - itu-minitwit-network
+    depends_on:
+      - grafana
+      - prometheus
+
+# jeg aner ikke hvad det her segment gør men det var med i helges skabelon
+# minitwitclient:
+#   build:
+#      context: .
+#      dockerfile: docker/minitwit_client/Dockerfile
+#    image: helgecph/minitwitclient
+#    networks:
+#      - itu-minitwit-network
+#    depends_on:
+#     - minitwitserver
+#     - grafana
+#     - prometheus
+
+  prometheus:
+    #fra dockerhubs hjemmeside
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    networks:
+      - itu-minitwit-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - itu-minitwit-network
+#fra dockerhub/grafan. uden denne volume mister vi alt på grafan hvis vi genstarter vores droplet miv miv
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+volumes:
+  grafana-storage: {}
