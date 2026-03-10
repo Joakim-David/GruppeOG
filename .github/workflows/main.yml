@@ -27,3 +27,5 @@ jobs:
       run: dotnet test src/Chirp.Web/Chirp.Web.csproj --no-build --verbosity normal
     - name: Test Chirp.Repositories.Tests
       run: dotnet test test/Chirp.Repositories.Tests --no-build --verbosity normal
+    - name: Test Chirp.IntegrationTests
+      run: dotnet test test/Chirp.IntegrationTests --no-build --verbosity normal
