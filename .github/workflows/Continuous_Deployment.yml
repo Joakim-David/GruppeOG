@@ -57,8 +57,8 @@ jobs:
       - name: Deploy to server
         run: |
           ssh $SSH_USER@$SSH_HOST -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
-            "export POSTGRES_PASSWORD='$POSTGRES_PASSWORD' && ./deploy.sh"
+            "export POSTGRES_PSW='$POSTGRES_PSW' && ./deploy.sh"
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PSW }}
