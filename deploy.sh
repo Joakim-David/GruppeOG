@@ -15,7 +15,7 @@ docker run -d \
     --name chirp \
     --restart unless-stopped \
     -p 7273:7273 \
-    -e "ConnectionStrings__DefaultConnection=Host=db-postgresql-fra1-72367-do-user-33600044-0.e.db.ondigitalocean.com;Port=25060;Database=chirp;Username=doadmin;Password=${POSTGRES_PSW}>
+    -e "ConnectionStrings__DefaultConnection=Host=db-postgresql-fra1-72367-do-user-33600044-0.e.db.ondigitalocean.com;Port=25060;Database=chirp;Username=doadmin;Password=${POSTGRES_PSW}" \
     -v /data/latest.txt:/app/data/latest.txt \
     bennyboomblaster/minitwitimage:latest
 
