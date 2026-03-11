@@ -6,10 +6,10 @@ using System.Net.Security;
 using Core;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.VisualBasic;
-    /// <summary>
-    /// Repository responsible for accessing and manipulating author-related data.
-    /// Provides operations for creating authors, following/unfollowing, and querying author information.
-    /// </summary>
+/// <summary>
+/// Repository responsible for accessing and manipulating author-related data.
+/// Provides operations for creating authors, following/unfollowing, and querying author information.
+/// </summary>
 public class AuthorRepository : IAuthorRepository
 {
     private readonly CheepDBContext _dbContext;

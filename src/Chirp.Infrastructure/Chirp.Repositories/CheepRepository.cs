@@ -30,7 +30,7 @@ public class CheepRepository : ICheepRepository
         // Validate input cheep
         if (cheep.Author == null) throw new NullReferenceException("Author is null");
         // Ignore cheeps longer than 160 characters
-        if (cheep.Text.Length > 160) return; 
+        if (cheep.Text.Length > 160) return;
         // Map DTO to Cheep entity
         Cheep newCheep = new()
         {
@@ -39,9 +39,9 @@ public class CheepRepository : ICheepRepository
             TimeStamp = cheep.TimeStamp
         };
         // Add cheep to the DbContext (not yet persisted)
-        await _dbContext.Cheeps.AddAsync(newCheep); 
+        await _dbContext.Cheeps.AddAsync(newCheep);
         // Persist the cheep to the database
-        await _dbContext.SaveChangesAsync(); 
+        await _dbContext.SaveChangesAsync();
     }
 
     /// <summary>
@@ -61,8 +61,8 @@ public class CheepRepository : ICheepRepository
             CheepId = (long)cheep.CheepId,
             TimeStamp = DateTime.UtcNow.AddHours(1)
         };
-        await _dbContext.SavedCheeps.AddAsync(newCheep); 
-        await _dbContext.SaveChangesAsync(); 
+        await _dbContext.SavedCheeps.AddAsync(newCheep);
+        await _dbContext.SaveChangesAsync();
     }
 
     /// <summary>

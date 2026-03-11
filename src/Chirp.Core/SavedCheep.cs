@@ -29,6 +29,6 @@ public class SavedCheep
     /// <summary>
     /// The time when the cheep was saved.
     /// </summary>
-    [Column("time_stamp")]  
+    [Column("time_stamp")]
     public DateTime TimeStamp { set; get; }
 }

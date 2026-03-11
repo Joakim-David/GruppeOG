@@ -12,9 +12,9 @@ public class Cheep
     /// <summary>
     /// Unique identifier for the cheep.
     /// </summary>
-    [Column("message_id")]   
+    [Column("message_id")]
     public long CheepId { set; get; }
-    
+
     /// <summary>
     /// The textual content of the cheep.
     /// Limited to 160 characters.
@@ -24,9 +24,9 @@ public class Cheep
     /// <summary>
     /// The time when the cheep was created.
     /// </summary>
-    [Column("time_stamp")]  
+    [Column("time_stamp")]
     public DateTime TimeStamp { set; get; }
-    
+
     /// <summary>
     /// The author who wrote the cheep.
     /// </summary>
