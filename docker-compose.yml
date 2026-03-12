@@ -4,11 +4,12 @@
 
 services:
   minitwitserver:
+    platform: "linux/amd64"
     image: bennyboomblaster/minitwitimage:latest
     container_name: chirp
     ports:
       - "7273:7273"
-    environment:
+    environment: 
       - ConnectionStrings__DefaultConnection=Host=db-postgresql-fra1-72367-do-user-33600044-0.e.db.ondigitalocean.com;Port=25060;Database=chirp;Username=doadmin;Password=AVNS_FbDogIgXbauFe7Qayjw;SSL Mode=Require
     volumes:
       #- /data/latest.txt:/app/data/latest.txt
