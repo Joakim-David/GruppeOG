@@ -47,6 +47,10 @@ else
 // Adds detailed database exception pages during development
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+/*private static readonly Counter response_Counter =
+    Metrics.CreateCounter();
+*/
+
 // -----------------------------------------------------------------------------
 // Identity and authentication configuration
 // -----------------------------------------------------------------------------
@@ -203,6 +207,7 @@ app.MapRazorPages();
 
 // Start the application
 app.Run();
+
 
 // -----------------------------------------------------------------------------
 // Program class exposed for integration testing
