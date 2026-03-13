@@ -59,7 +59,7 @@ public class CheepRepository : ICheepRepository
         {
             Saver = await _dbContext.Users.FindAsync(user.AuthorId),
             CheepId = (long)cheep.CheepId,
-            TimeStamp = DateTime.Now
+            TimeStamp = DateTime.UtcNow.AddHours(1)
         };
         await _dbContext.SavedCheeps.AddAsync(newCheep); 
         await _dbContext.SaveChangesAsync(); 

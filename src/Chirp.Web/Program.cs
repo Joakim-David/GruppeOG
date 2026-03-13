@@ -39,10 +39,10 @@ if (builder.Environment.IsEnvironment("testing"))
 }
 else
 {
-    // Use persistent SQLite database for non-testing environments
+    // Use PostgreSQL for development and production
     string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<CheepDBContext>(options =>
-        options.UseSqlite(connectionString, b => b.MigrationsAssembly("Chirp.Web")));
+        options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Chirp.Web")));
 }
 
 // Adds detailed database exception pages during development
@@ -155,16 +155,8 @@ using (var scope = app.Services.CreateScope())
     }
     else
     {
-        var dbPath = "/app/data/chirp.db";
-        if (!File.Exists(dbPath))
-        {
-            context.Database.EnsureCreated(); 
-            DbInitializer.SeedDatabase(context);
-        }
-        else
-        {
-            context.Database.Migrate(); 
-        }
+        // Apply migrations
+        context.Database.Migrate();
     }
 }
 // -----------------------------------------------------------------------------
