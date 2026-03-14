@@ -9,11 +9,9 @@ services:
     container_name: chirp
     ports:
       - "7273:7273"
-    environment: 
-      # Using SQLite to match your current Program.cs logic
-      - ConnectionStrings__DefaultConnection=Data Source=/app/data/chirp.db
+    environment:
+      - "ConnectionStrings__DefaultConnection=Host=db-postgresql-fra1-72367-do-user-33600044-0.e.db.ondigitalocean.com;Port=25060;Database=defaultdb;Username=doadmin;Password=${DO_DB_PASSWORD};SSL Mode=Require"
     volumes:
-      - ./src/Chirp.Web/data:/app/data
       - ./latest.txt:/app/data/latest.txt
     networks:
       - itu-minitwit-network
