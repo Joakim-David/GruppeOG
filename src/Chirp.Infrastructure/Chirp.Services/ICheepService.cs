@@ -41,8 +41,8 @@ public interface ICheepService
     /// <returns>
     /// A list of saved cheeps.
     /// </returns>
-    Task<List<CheepDTO>> GetUserTimelineCheeps(string user ,string author, int pageNumber);
-    
+    Task<List<CheepDTO>> GetUserTimelineCheeps(string user, string author, int pageNumber);
+
     /// <summary>
     /// Retrieves cheeps saved by a specific user.
     /// </summary>

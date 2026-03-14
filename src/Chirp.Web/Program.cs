@@ -58,7 +58,7 @@ builder.Services.AddDefaultIdentity<Author>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
     options.User.AllowedUserNameCharacters += " ";
-    
+
     // Add these lines to relax password requirements
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
@@ -126,8 +126,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Authentication providers
 // -----------------------------------------------------------------------------
 
-    // Use simple cookie authentication in testing environment
-    builder.Services.AddAuthentication().AddCookie();
+// Use simple cookie authentication in testing environment
+builder.Services.AddAuthentication().AddCookie();
 
 // -----------------------------------------------------------------------------
 // Build application
