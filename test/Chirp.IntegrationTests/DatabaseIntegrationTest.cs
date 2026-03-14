@@ -105,7 +105,7 @@ public class DatabaseIntegrationTests : IClassFixture<ChirpWebApplicationFactory
         var (cheepService, authorService, scope) = GetServices();
         using (scope)
         {
-            var cheeps = await cheepService.GetUserTimelineCheeps("Helge", 1);
+            var cheeps = await cheepService.GetUserTimelineCheeps("Helge", "Helge",1);
 
             Assert.NotNull(cheeps);
             Assert.NotEmpty(cheeps);
@@ -124,12 +124,12 @@ public class DatabaseIntegrationTests : IClassFixture<ChirpWebApplicationFactory
             var testUserName = "Helge";
             var testText = "This is a test cheep from integration test";
 
-            var cheepsBefore = await cheepService.GetUserTimelineCheeps(testUserName, 1);
+            var cheepsBefore = await cheepService.GetUserTimelineCheeps(testUserName, testUserName, 1);
             var countBefore = cheepsBefore.Count;
 
             await cheepService.CreateCheepForUser(testUserName, testText);
 
-            var cheepsAfter = await cheepService.GetUserTimelineCheeps(testUserName, 1);
+            var cheepsAfter = await cheepService.GetUserTimelineCheeps(testUserName, testUserName, 1);
             var countAfter = cheepsAfter.Count;
 
             Assert.Equal(countBefore + 1, countAfter);

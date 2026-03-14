@@ -59,7 +59,7 @@ builder.Services.AddDefaultIdentity<Author>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
     options.User.AllowedUserNameCharacters += " ";
-    
+
     // Add these lines to relax password requirements
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;

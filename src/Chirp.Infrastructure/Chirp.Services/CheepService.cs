@@ -91,14 +91,15 @@ public class CheepService : ICheepService
     /// <returns>
     /// A list of cheeps for the user's timeline.
     /// </returns>
-    public async Task<List<CheepDTO>> GetUserTimelineCheeps(string user ,string authPage, int pageNumber)
+    public async Task<List<CheepDTO>> GetUserTimelineCheeps(string user, string authPage, int pageNumber)
     {
         List<string> userNames = new List<string>();
         int offset = (pageNumber - 1) * CheepsPerPage;
         if (!authPage.Equals(user)) // /andenPersonsTimeline
         {
             userNames.Add(authPage);
-        } else if (authPage.Equals(user)) // hvis vi er inde på egen timeline
+        }
+        else if (authPage.Equals(user)) // hvis vi er inde på egen timeline
         {
             userNames.Add(user);
             List<AuthorDTO> following = await _authorService.GetFollowing(user);

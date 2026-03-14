@@ -7,6 +7,9 @@
     <RazorCompileOnBuild>true</RazorCompileOnBuild>
     <RazorCompileOnPublish>true</RazorCompileOnPublish>
     <UserSecretsId>60774310-9492-4d5c-8894-d6385e343252</UserSecretsId>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisMode>Minimum</AnalysisMode>
   </PropertyGroup>
 
   <ItemGroup>

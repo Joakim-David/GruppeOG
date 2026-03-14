@@ -15,17 +15,17 @@ public class CheepDBContext : IdentityDbContext<Author, IdentityRole<int>, int>
     /// <summary>
     /// Database table for cheeps posted by authors.
     /// </summary>
-    public DbSet<Cheep> Cheeps { get; set; }
+    public DbSet<Cheep> Cheeps { get; set; } = null!;
 
     /// <summary>
     /// Database table representing follow relationships between authors.
     /// </summary>
-    public DbSet<Follow> Follows { get; set; }
+    public DbSet<Follow> Follows { get; set; } = null!;
 
     /// <summary>
     /// Database table representing cheeps saved by authors.
     /// </summary>
-    public DbSet<SavedCheep> SavedCheeps { get; set; }
+    public DbSet<SavedCheep> SavedCheeps { get; set; } = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CheepDBContext"/>.

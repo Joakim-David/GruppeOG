@@ -1,3 +1,6 @@
+namespace Chirp.Web.Controllers;
+
+
 using Chirp.Services;
 using Chirp.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -27,7 +30,7 @@ public class SimulatorController : ControllerBase
     /// Used to track simulator progress through test sequences.
     /// </summary>
     private static int _latest = 0;
-    
+
     /// <summary>
     /// Expected Authorization header value for simulator authentication.
     /// Format: "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh"
@@ -39,7 +42,7 @@ public class SimulatorController : ControllerBase
     /// </summary>
     /// <param name="authHeader">The Authorization header value from the request.</param>
     /// <returns>True if the header matches the expected value, false otherwise.</returns>
-    private bool IsAuthorized(string authHeader)
+    private static bool IsAuthorized(string? authHeader)
         => authHeader == SimulatorAuth;
 
     private readonly ICheepService _cheepService;
@@ -91,38 +94,38 @@ public class SimulatorController : ControllerBase
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) 
+        if (!IsAuthorized(auth))
             return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
-        
-        if (latest.HasValue) 
+
+        if (latest.HasValue)
             _latest = latest.Value;
-        
+
         var cheeps = await _cheepService.GetNLatestCheeps(null, no);
-        
-        var response = cheeps.Select(c => new 
+
+        var response = cheeps.Select(c => new
         {
             content = c.Text,
             pub_date = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
             user = c.Author.Name
         });
-        
+
         return Ok(response);
     }
 
     [HttpGet("msgs/{username}")]
     [HttpPost("msgs/{username}")]
     public async Task<IActionResult> MessagesPerUser(
-        string username, 
-        [FromHeader(Name = "Authorization")] string? auth,  
+        string username,
+        [FromHeader(Name = "Authorization")] string? auth,
         [FromQuery] int no = 100,
         [FromQuery] int? latest = null)
     {
-        if (!IsAuthorized(auth)) 
+        if (!IsAuthorized(auth))
             return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
-        
-        if (latest.HasValue) 
+
+        if (latest.HasValue)
             _latest = latest.Value;
-        
+
         if (Request.Method == "GET")
         {
             try
@@ -130,16 +133,16 @@ public class SimulatorController : ControllerBase
                 // Get cheeps from the user
                 var author = await _authorService.GetAuthorByName(username);
                 if (author == null) return NotFound();
-                
+
                 var cheeps = await _cheepService.GetNLatestCheeps(username, no);
-                
+
                 var response = cheeps.Select(c => new
                 {
                     content = c.Text,
                     pub_date = c.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"),
                     user = c.Author.Name
                 });
-                
+
                 return Ok(response);
             }
             catch (Exception ex)
@@ -157,9 +160,9 @@ public class SimulatorController : ControllerBase
 
                 var author = await _authorService.GetAuthorByName(username);
                 if (author == null) return NotFound();
-                
+
                 await _cheepService.CreateCheepForUser(username, content);
-                
+
                 return StatusCode(204);
             }
             catch (Exception ex)
@@ -200,11 +203,11 @@ public class SimulatorController : ControllerBase
             string username = request.GetProperty("username").GetString()!;
             string email = request.GetProperty("email").GetString()!;
             string pwd = request.GetProperty("pwd").GetString()!;
-            
+
             var user = CreateUser();
             await _userStore.SetUserNameAsync(user, username, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
-            
+
             var result = await _userManager.CreateAsync(user, pwd);
 
             if (result.Succeeded)
@@ -213,7 +216,7 @@ public class SimulatorController : ControllerBase
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 await _userManager.ConfirmEmailAsync(user, token);
             }
-            
+
             if (!result.Succeeded)
             {
                 // Check if it's a "username already taken" error
@@ -222,12 +225,12 @@ public class SimulatorController : ControllerBase
                 {
                     return StatusCode(400, new { status = 400, error_msg = "Username already taken" });
                 }
-                
+
                 // For other errors, return a generic message
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 return StatusCode(400, new { status = 400, error_msg = errors });
             }
-            
+
             return StatusCode(204);
         }
         catch (Exception ex)
@@ -250,7 +253,7 @@ public class SimulatorController : ControllerBase
     /// Used by the simulator to track its progress through test sequences.
     /// </remarks>
     [HttpGet("latest")]
-    public async Task<IActionResult> GetLatest()
+    public IActionResult GetLatest()
     {
         return Ok(new { latest = _latest });
     }
@@ -302,8 +305,8 @@ public class SimulatorController : ControllerBase
                     // Check if users exists first
                     var target_author = await _authorService.GetAuthorByName(targetUser);
                     var user_author = await _authorService.GetAuthorByName(username);
-                    if (target_author == null || user_author == null) 
-                        return NotFound();                    
+                    if (target_author == null || user_author == null)
+                        return NotFound();
 
 
                     await _authorService.FollowUser(username, targetUser);
@@ -317,8 +320,8 @@ public class SimulatorController : ControllerBase
                     // Check if users exists first
                     var target_author = await _authorService.GetAuthorByName(targetUser);
                     var user_author = await _authorService.GetAuthorByName(username);
-                    if (target_author == null || user_author == null) 
-                        return NotFound(); 
+                    if (target_author == null || user_author == null)
+                        return NotFound();
 
                     await _authorService.UnfollowUser(username, targetUser);
                     return StatusCode(204);
@@ -341,20 +344,20 @@ public class SimulatorController : ControllerBase
         {
             try
             {
-                 // Check if user exists first
+                // Check if user exists first
                 var author = await _authorService.GetAuthorByName(username);
-                if (author == null) 
+                if (author == null)
                     return NotFound();
 
                 List<AuthorDTO> following = await _authorService.GetFollowing(username);
                 var followNames = following
                     .Take(no)
-                    .Select(a => a.Name)  
+                    .Select(a => a.Name)
                     .ToList();
 
                 return Ok(new { follows = followNames });
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 return NotFound();
             }
@@ -381,7 +384,7 @@ public class SimulatorController : ControllerBase
             return Activator.CreateInstance<Author>();
         }
         catch
-        {                                    
+        {
             throw new InvalidOperationException($"Can't create an instance of '{nameof(Author)}'. " +
                 $"Ensure that '{nameof(Author)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                 $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");

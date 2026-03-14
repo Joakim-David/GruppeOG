@@ -707,7 +707,7 @@ public static class DbInitializer
             a8.Cheeps = new List<Cheep>() { c55, c124, c139, c151, c164, c263, c310, c328, c360, c375, c430, c470, c564, c576, c605 };
             a11.Cheeps = new List<Cheep>() { c656 };
             a12.Cheeps = new List<Cheep>() { c657 };
-            
+
             //Seed the database
             chirpContext.Users.AddRange(authors);
             chirpContext.Cheeps.AddRange(cheeps);
