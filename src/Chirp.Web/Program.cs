@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -135,6 +136,9 @@ builder.Services.AddAuthentication().AddCookie();
 
 var app = builder.Build();
 
+var cpuGauge = Metrics.CreateGauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.");
+var responseCounter = Metrics.CreateCounter("minitwit_http_responses_total", "The count of HTTP responses sent.");
+var reqDurationSummary = Metrics.CreateHistogram("minitwit_request_duration_milliseconds", "Request duration distribution.");
 
 // -----------------------------------------------------------------------------
 // Database initialization and seeding
@@ -182,16 +186,42 @@ if (app.Environment.IsEnvironment("testing"))
 // Middleware
 // -----------------------------------------------------------------------------
 
+// Den er er gemini den her til at teste om lortet virker ):
+app.UseMetricServer();
+
 app.UseStaticFiles();
 app.UseRouting();
-app.UseCors("AllowChirp");
+
+// Track default HTTP metrics
+app.UseHttpMetrics();
+
+// Helges custom metrics tracker
+app.Use(async (context, next) =>
+{
+    var watch = System.Diagnostics.Stopwatch.StartNew();
+
+    var process = System.Diagnostics.Process.GetCurrentProcess();
+    cpuGauge.Set(process.WorkingSet64 / 1024.0 / 1024.0);
+
+    try
+    {
+        await next(context);
+    }
+    finally
+    {
+        watch.Stop();
+        responseCounter.Inc();
+        reqDurationSummary.Observe(watch.Elapsed.TotalMilliseconds);
+    }
+});
+
+// app.UseCors("AllowChirp");
 app.UseAuthentication();
 app.UseAuthorization();
 
 // Razor Pages routing
 app.MapControllers();
 app.MapRazorPages();
-
 
 // Start the application
 app.Run();

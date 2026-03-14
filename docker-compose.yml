@@ -1,0 +1,45 @@
+﻿networks:
+  itu-minitwit-network:
+    external: false
+
+services:
+  minitwitserver:
+    platform: "linux/amd64"
+    image: bennyboomblaster/minitwitimage:latest
+    container_name: chirp
+    ports:
+      - "7273:7273"
+    environment:
+      - "ConnectionStrings__DefaultConnection=Host=db-postgresql-fra1-72367-do-user-33600044-0.e.db.ondigitalocean.com;Port=25060;Database=defaultdb;Username=doadmin;Password=${POSTGRES_PSW};SSL Mode=Require"
+    volumes:
+      - ./latest.txt:/app/data/latest.txt
+    networks:
+      - itu-minitwit-network
+    depends_on:
+      - grafana
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    networks:
+      - itu-minitwit-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - itu-minitwit-network
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+volumes:
+  grafana-storage: {}
