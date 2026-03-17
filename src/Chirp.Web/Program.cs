@@ -193,15 +193,15 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Track default HTTP metrics
-app.UseHttpMetrics(); 
+app.UseHttpMetrics();
 
 // Helges custom metrics tracker
 app.Use(async (context, next) =>
 {
     var watch = System.Diagnostics.Stopwatch.StartNew();
-   
+
     var process = System.Diagnostics.Process.GetCurrentProcess();
-    cpuGauge.Set(process.WorkingSet64 / 1024.0 / 1024.0); 
+    cpuGauge.Set(process.WorkingSet64 / 1024.0 / 1024.0);
 
     try
     {
