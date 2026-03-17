@@ -36,10 +36,13 @@ services:
     container_name: grafana
     ports:
       - "3000:3000"
-    networks:
-      - itu-minitwit-network
     volumes:
       - grafana-storage:/var/lib/grafana
-
+    environment:
+      - GF_SECURITY_ADMIN_USER=helgeandfriends
+      - GF_SECURITY_ADMIN_PASSWORD=sesame0uvr3toi
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - itu-minitwit-network  
 volumes:
   grafana-storage: {}
