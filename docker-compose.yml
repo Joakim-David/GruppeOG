@@ -70,4 +70,5 @@ services:
     networks:
       - itu-minitwit-network  
 volumes:
+  loki-data:
   grafana-storage: {}
