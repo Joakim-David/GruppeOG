@@ -20,7 +20,7 @@ services:
       - prometheus
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus@sha256:4a61322ac1103a0e3aea2a61ef1718422a48fa046441f299d71e660a3bc71ae9
     container_name: prometheus
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -32,14 +32,17 @@ services:
       - itu-minitwit-network
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana@sha256:7227fe2aca02ad399c8de438ceaae7687415da2abc763665795858edbe48819c
     container_name: grafana
     ports:
       - "3000:3000"
-    networks:
-      - itu-minitwit-network
     volumes:
       - grafana-storage:/var/lib/grafana
-
+    environment:
+      - GF_SECURITY_ADMIN_USER=helgeandfriends
+      - GF_SECURITY_ADMIN_PASSWORD=sesame0uvr3toi
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - itu-minitwit-network  
 volumes:
   grafana-storage: {}
