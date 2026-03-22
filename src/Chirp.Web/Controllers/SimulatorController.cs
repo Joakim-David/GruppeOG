@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Chirp.Core;
 using System.Text.Json;
+using Prometheus;
 
 
 /// <summary>
@@ -36,6 +37,13 @@ public class SimulatorController : ControllerBase
     /// Format: "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh"
     /// </summary>
     private const string SimulatorAuth = "Basic c2ltdWxhdG9yOnN1cGVyX3NhZmUh";
+
+    private static readonly Counter UserRegistrations = Metrics.CreateCounter("user_registrations_total", "Total number of user registrations");
+    private static readonly Counter CheepsSend = Metrics.CreateCounter("cheeps_send_total", "Total number of cheeps send");
+    private static readonly Counter UserFollows = Metrics.CreateCounter("user_follows_total", "Total number of user follows");
+    private static readonly Counter UserUnfollowed = Metrics.CreateCounter("user_unfollows", "Total number of user unfollows");
+
+
 
     /// <summary>
     /// Validates the Authorization header against the expected simulator credentials.
@@ -163,6 +171,7 @@ public class SimulatorController : ControllerBase
 
                 await _cheepService.CreateCheepForUser(username, content);
 
+                CheepsSend.Inc();
                 return StatusCode(204);
             }
             catch (Exception ex)
@@ -231,6 +240,7 @@ public class SimulatorController : ControllerBase
                 return StatusCode(400, new { status = 400, error_msg = errors });
             }
 
+            UserRegistrations.Inc();
             return StatusCode(204);
         }
         catch (Exception ex)
@@ -310,6 +320,7 @@ public class SimulatorController : ControllerBase
 
 
                     await _authorService.FollowUser(username, targetUser);
+                    UserFollows.Inc();
                     return StatusCode(204);
                 }
 
@@ -324,6 +335,7 @@ public class SimulatorController : ControllerBase
                         return NotFound();
 
                     await _authorService.UnfollowUser(username, targetUser);
+                    UserUnfollowed.Inc();
                     return StatusCode(204);
                 }
 
