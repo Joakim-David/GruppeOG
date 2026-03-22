@@ -22,14 +22,16 @@ services:
 
   alloy:
     image: grafana/alloy@sha256:e3a1fff5eee8e2535fb75b350d0ccb722149720c788e57fd8d93b33e9163d85b
+    container_name: alloy
     volumes:
-      - ./docker.alloy:/etc/alloy/docker.alloy:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-    command:  run --server.http.listen-addr=0.0.0.0:4000 --storage.path=/var/lib/Alloy/data /etc/Alloy/config.alloy
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:  run --server.http.listen-addr=0.0.0.0:4000 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
     ports:
       - "4000:4000"
     networks:
       - itu-minitwit-network
+    restart: unless-stopped
 
   loki:
     image: grafana/loki@sha256:535a14ffef1d48099fc7f940da51bbcb253fcc63c6918e070f60caa53c82bf5c
@@ -37,9 +39,9 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - ./loki/loki-config.yml:/etc/loki/loki-config.yaml
+      - ./loki/loki-config.yml:/etc/loki/loki-config.yml
       - loki-data:/loki
-    command: -config.file=/etc/loki/loki-config.yaml
+    command: -config.file=/etc/loki/loki-config.yml
     networks:
       - itu-minitwit-network
     restart: unless-stopped
