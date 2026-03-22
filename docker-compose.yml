@@ -25,7 +25,7 @@ services:
     volumes:
       - ./docker.alloy:/etc/alloy/docker.alloy:ro
       - /var/run/docker.sock:/var/run/docker.sock
-    command:  run --server.http.listen-addr=0.0.0.0:4000 --storage.path=/var/lib/Alloy/data /etc/Alloy/alloy.config
+    command:  run --server.http.listen-addr=0.0.0.0:4000 --storage.path=/var/lib/Alloy/data /etc/Alloy/config.alloy
     ports:
       - "4000:4000"
     networks:
