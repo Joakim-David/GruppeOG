@@ -21,7 +21,7 @@ services:
       - loki
 
   alloy:
-    image: grafana/alloy:latest
+    image: grafana/alloy@sha256:e3a1fff5eee8e2535fb75b350d0ccb722149720c788e57fd8d93b33e9163d85b
     volumes:
       - ./docker.alloy:/etc/alloy/docker.alloy:ro
       - /var/run/docker.sock:/var/run/docker.sock
@@ -32,7 +32,7 @@ services:
       - itu-minitwit-network
 
   loki:
-    image: grafana/loki:3.6.7
+    image: grafana/loki@sha256:e3a1fff5eee8e2535fb75b350d0ccb722149720c788e57fd8d93b33e9163d85b
     container_name: loki
     ports:
       - "3100:3100"
