@@ -62,6 +62,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - grafana-storage:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=helgeandfriends
