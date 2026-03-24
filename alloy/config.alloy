@@ -50,7 +50,7 @@ loki.process "docker" {
 loki.source.docker "docker" {
     host             = "unix:///var/run/docker.sock"
     targets          = discovery.docker.docker.targets
-    forward_to       = [loki.write.default.receiver]
+    forward_to       = [loki.process.docker.receiver]
     relabel_rules    = discovery.relabel.docker.rules
     refresh_interval = "5s"
 }

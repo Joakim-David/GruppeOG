@@ -1,6 +1,7 @@
 namespace Chirp.Services;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Repositories;
 
 /// <summary>
@@ -18,6 +19,7 @@ public class AuthorService : IAuthorService
     /// </summary>
     private readonly IAuthorRepository _authorRepository;
     private readonly ICheepRepository _cheepRepository;
+    private readonly ILogger<AuthorService> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthorService"/> class.
@@ -25,10 +27,14 @@ public class AuthorService : IAuthorService
     /// <param name="authorRepository">
     /// Repository responsible for author data access.
     /// </param>
-    public AuthorService(IAuthorRepository authorRepository, ICheepRepository cheepRepository)
+    public AuthorService(
+        IAuthorRepository authorRepository,
+        ICheepRepository cheepRepository,
+        ILogger<AuthorService> logger)
     {
         _authorRepository = authorRepository;
         _cheepRepository = cheepRepository;
+        _logger = logger;
     }
 
     /// <summary>
@@ -95,6 +101,11 @@ public class AuthorService : IAuthorService
         }
 
         await _authorRepository.Follow(currentUser, targetUser);
+
+        _logger.LogInformation(
+            "FollowCreated follower={Follower} followed={Followed}",
+            currentUser.Name,
+            targetUser.Name);
     }
 
     /// <summary>
