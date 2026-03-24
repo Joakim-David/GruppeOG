@@ -17,6 +17,35 @@ discovery.relabel "docker" {
         target_label  = "stream"
     }
 }
+loki.process "docker" {
+  forward_to = [loki.write.default.receiver]
+
+  stage.static_labels {
+    values = {
+      service = "chirp-web"
+      env     = "prod"
+    }
+  }
+
+  stage.json {
+    expressions = {
+      level    = "LogLevel"
+      category = "Category"
+      message  = "Message"
+      trace_id = "TraceId"
+    }
+  }
+
+  stage.labels {
+    values = {
+      level = ""
+    }
+  }
+
+  stage.output {
+    source = "message"
+  }
+}
 
 loki.source.docker "docker" {
     host             = "unix:///var/run/docker.sock"
