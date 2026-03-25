@@ -21,6 +21,7 @@ services:
       - loki
 
   alloy:
+    platform: linux/amd64
     image: grafana/alloy@sha256:e3a1fff5eee8e2535fb75b350d0ccb722149720c788e57fd8d93b33e9163d85b
     container_name: alloy
     volumes:
@@ -34,6 +35,7 @@ services:
     restart: unless-stopped
 
   loki:
+    platform: linux/amd64
     image: grafana/loki@sha256:535a14ffef1d48099fc7f940da51bbcb253fcc63c6918e070f60caa53c82bf5c
     container_name: loki
     ports:
