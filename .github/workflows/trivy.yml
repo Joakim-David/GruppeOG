@@ -1,0 +1,27 @@
+﻿name: Trivy Docker Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  trivy:
+    name: Scan Docker image for vulnerabilities
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t chirp .
+
+      - name: Run Trivy scanner
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: 'chirp'
+          format: 'table'
+          exit-code: '1'
+          severity: 'HIGH,CRITICAL'
