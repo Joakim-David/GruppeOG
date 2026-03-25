@@ -6,13 +6,18 @@ on:
   pull_request:
     branches: [ main ]
 
+
+permissions:
+  security-events: write
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   analyze:
     name: Analyze C# with CodeQL
     runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      contents: read
 
     steps:
       - name: Checkout repository
@@ -24,12 +29,17 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: csharp
+          build-mode: manual
+          queries: security-and-quality
+
+      - name: Restore
+        run: dotnet restore src/Chirp.Web/Chirp.Web.csproj
 
       - name: Build project
         run: dotnet build src/Chirp.Web/Chirp.Web.csproj --configuration Release
 
-      - name: Run CodeQL analysis
-        uses: github/codeql-action/analyze@v3
+      - name: Run CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
