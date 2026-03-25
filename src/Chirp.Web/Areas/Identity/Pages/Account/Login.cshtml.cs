@@ -120,20 +120,24 @@ namespace Chirp.Web.Areas.Identity.Pages.Account
                 }
                 if (result.RequiresTwoFactor)
                 {
+                    _logger.LogWarning("LoginFailed reason={Reason}", "RequiresTwoFactor");
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
+                    _logger.LogWarning("LoginFailed reason={Reason}", "LockedOut");
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
+                    _logger.LogWarning("LoginFailed reason={Reason}", "InvalidCredentials");
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
             }
 
+            _logger.LogWarning("LoginFailed reason={Reason}", "InvalidInput");
             // If we got this far, something failed, redisplay form
             return Page();
         }
