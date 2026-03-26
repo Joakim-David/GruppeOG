@@ -8,7 +8,7 @@ services:
     image: bennyboomblaster/minitwitimage:latest
     container_name: chirp
     ports:
-      - "127.0.0.1:7273:7273"
+      - "7273:7273"
     environment:
       - "ConnectionStrings__DefaultConnection=Host=db-postgresql-fra1-72367-do-user-33600044-0.e.db.ondigitalocean.com;Port=25060;Database=chirp;Username=doadmin;Password=${POSTGRES_PSW};SSL Mode=Require"
     volumes:
@@ -21,7 +21,6 @@ services:
       - loki
 
   alloy:
-    platform: linux/amd64
     image: grafana/alloy@sha256:e3a1fff5eee8e2535fb75b350d0ccb722149720c788e57fd8d93b33e9163d85b
     container_name: alloy
     volumes:
@@ -35,7 +34,6 @@ services:
     restart: unless-stopped
 
   loki:
-    platform: linux/amd64
     image: grafana/loki@sha256:535a14ffef1d48099fc7f940da51bbcb253fcc63c6918e070f60caa53c82bf5c
     container_name: loki
     ports:
