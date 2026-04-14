@@ -1,4 +1,4 @@
-﻿discovery.docker "docker" {
+discovery.docker "docker" {
     host             = "unix:///var/run/docker.sock"
     refresh_interval = "5s"
 }
@@ -7,49 +7,92 @@ discovery.relabel "docker" {
     targets = []
 
     rule {
-        source_labels = ["meta_docker_container_name"]
-        regex         = "/chirp"
-        action        = "keep"
-    }
-
-    rule {
-        source_labels = ["meta_docker_container_name"]
+        source_labels = ["__meta_docker_container_name"]
         regex         = "/(.*)"
         target_label  = "container"
     }
 
     rule {
-        source_labels = ["meta_docker_container_log_stream"]
+        source_labels = ["__meta_docker_container_log_stream"]
         target_label  = "stream"
     }
+
+    rule {
+        source_labels = ["__meta_docker_container_name"]
+        regex         = "/chirp"
+        target_label  = "service_name"
+        replacement   = "minitwit"
+    }
+
+    rule {
+        source_labels = ["__meta_docker_container_name"]
+        regex         = "/loki"
+        target_label  = "service_name"
+        replacement   = "loki"
+    }
+
+    rule {
+        source_labels = ["__meta_docker_container_name"]
+        regex         = "/grafana"
+        target_label  = "service_name"
+        replacement   = "grafana"
+    }
+
+    rule {
+        source_labels = ["__meta_docker_container_name"]
+        regex         = "/prometheus"
+        target_label  = "service_name"
+        replacement   = "prometheus"
+    }
+
+    rule {
+        source_labels = ["__meta_docker_container_name"]
+        regex         = "/alloy"
+        target_label  = "service_name"
+        replacement   = "alloy"
+    }
 }
+
 loki.process "docker" {
   forward_to = [loki.write.default.receiver]
 
   stage.static_labels {
     values = {
-      service = "chirp-web"
-      env     = "prod"
+      env = "prod",
     }
   }
 
-  stage.json {
-    expressions = {
-      level    = "LogLevel"
-      category = "Category"
-      message  = "Message"
-      trace_id = "TraceId"
+  // Chirp web app: parse JSON structured logs
+  stage.match {
+    selector = "{service_name=\"minitwit\"}"
+
+    stage.json {
+      expressions = {
+        level    = "LogLevel",
+        message  = "Message",
+        trace_id = "TraceId",
+      }
+    }
+
+    stage.labels {
+      values = {
+        level = "",
+      }
+    }
+
+    stage.output {
+      source = "message"
     }
   }
 
-  stage.labels {
-    values = {
-      level = ""
-    }
-  }
+  // Infrastructure: drop info-level noise, keep warn/error
+  stage.match {
+    selector = "{service_name!=\"minitwit\"}"
 
-  stage.output {
-    source = "message"
+    stage.drop {
+      expression          = "level=info"
+      drop_counter_reason = "info_infrastructure"
+    }
   }
 }
 
