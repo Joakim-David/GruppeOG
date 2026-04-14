@@ -1,6 +1,5 @@
 namespace Chirp.Services;
 
-using Microsoft.Extensions.Logging;
 using Repositories;
 
 /// <summary>
@@ -22,7 +21,6 @@ public class CheepService : ICheepService
     /// Service used to retrieve author information and validate user existence.
     /// </summary>
     private readonly IAuthorService _authorService;
-    private readonly ILogger<CheepService> _logger;
 
     /// <summary>
     /// Number of cheeps displayed per page.
@@ -38,14 +36,10 @@ public class CheepService : ICheepService
     /// <param name="authorService">
     /// Service responsible for author-related operations.
     /// </param>
-    public CheepService(
-        ICheepRepository cheepRepository,
-        IAuthorService authorService,
-        ILogger<CheepService> logger)
+    public CheepService(ICheepRepository cheepRepository, IAuthorService authorService)
     {
         _cheepRepository = cheepRepository;
         _authorService = authorService;
-        _logger = logger;
     }
 
     /// <summary>
@@ -99,7 +93,6 @@ public class CheepService : ICheepService
     /// </returns>
     public async Task<List<CheepDTO>> GetUserTimelineCheeps(string user, string authPage, int pageNumber)
     {
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
         List<string> userNames = new List<string>();
         int offset = (pageNumber - 1) * CheepsPerPage;
         if (!authPage.Equals(user)) // /andenPersonsTimeline
@@ -117,14 +110,6 @@ public class CheepService : ICheepService
         }
 
         List<CheepDTO> cheeps = await _cheepRepository.ReadCheepsFromFollowers(userNames, offset, CheepsPerPage);
-        stopwatch.Stop();
-
-        _logger.LogInformation(
-            "TimelineFetched user={User} count={Count} durationMs={DurationMs}",
-            user,
-            cheeps.Count,
-            stopwatch.ElapsedMilliseconds);
-
         return cheeps;
     }
 
@@ -175,11 +160,6 @@ public class CheepService : ICheepService
         };
 
         await _cheepRepository.CreateCheep(newCheep);
-
-        _logger.LogInformation(
-            "CheepCreated author={Author} cheepId={CheepId}",
-            author.Name,
-            newCheep.CheepId);
     }
 
     /// <summary>

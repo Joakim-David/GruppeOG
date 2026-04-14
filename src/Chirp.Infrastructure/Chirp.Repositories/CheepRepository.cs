@@ -42,9 +42,6 @@ public class CheepRepository : ICheepRepository
         await _dbContext.Cheeps.AddAsync(newCheep);
         // Persist the cheep to the database
         await _dbContext.SaveChangesAsync();
-
-        // Surface generated ID to caller for structured event logging.
-        cheep.CheepId = newCheep.CheepId;
     }
 
     /// <summary>
