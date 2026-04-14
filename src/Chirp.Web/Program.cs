@@ -45,21 +45,6 @@ else
         options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Chirp.Web")));
 }
 
-builder.Logging.ClearProviders();
-builder.Logging.AddJsonConsole(o =>
-{
-    o.IncludeScopes = true;
-    o.TimestampFormat = "yyyy-MM-ddTHH:mm:ss.fffZ ";
-});
-builder.Logging.Configure(o =>
-{
-    o.ActivityTrackingOptions =
-        ActivityTrackingOptions.TraceId |
-        ActivityTrackingOptions.SpanId |
-        ActivityTrackingOptions.ParentId;
-});
-
-
 // Adds detailed database exception pages during development
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

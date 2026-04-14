@@ -20,9 +20,11 @@ WORKDIR /src/src/Chirp.Web
 RUN dotnet publish -c Release -o /app/publish
 
 # Use runtime image for running
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-noble-chiseled AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
+
+USER app
 
 # Expose port 7273
 EXPOSE 7273
