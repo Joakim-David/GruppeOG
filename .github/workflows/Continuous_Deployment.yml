@@ -43,10 +43,18 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
       
-      - name: Copy docker-compose to server
+      - name: Copy docker-compose + config files to server
         run: |
           scp -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
             docker-compose.yml $SSH_USER@$SSH_HOST:~/docker-compose.yml
+          scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
+            grafana $SSH_USER@$SSH_HOST:~/grafana
+          scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
+            monitoring $SSH_USER@$SSH_HOST:~/monitoring
+          scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
+            loki $SSH_USER@$SSH_HOST:~/loki
+          scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
+            alloy $SSH_USER@$SSH_HOST:~/alloy
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
