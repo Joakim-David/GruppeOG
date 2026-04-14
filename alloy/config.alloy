@@ -8,6 +8,12 @@ discovery.relabel "docker" {
 
     rule {
         source_labels = ["meta_docker_container_name"]
+        regex         = "/chirp"
+        action        = "keep"
+    }
+
+    rule {
+        source_labels = ["meta_docker_container_name"]
         regex         = "/(.*)"
         target_label  = "container"
     }
