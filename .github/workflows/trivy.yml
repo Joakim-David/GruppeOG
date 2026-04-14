@@ -1,0 +1,24 @@
+﻿name: Trivy Docker Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  container-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@v0.2.6
+        with:
+          version: v0.69.3
+
+      - name: Build Docker image
+        run: docker build -t chirp .
+
+      - name: Run Trivy scan
+        run: trivy image chirp --exit-code 1 --severity HIGH,CRITICAL
