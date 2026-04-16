@@ -136,6 +136,9 @@ builder.Services.AddAuthentication().AddCookie();
 
 var app = builder.Build();
 
+var requestLogger = app.Services.GetRequiredService<ILoggerFactory>()
+    .CreateLogger("Chirp.Web.Request");
+
 var cpuGauge = Metrics.CreateGauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.");
 var responseCounter = Metrics.CreateCounter("minitwit_http_responses_total", "The count of HTTP responses sent.");
 var reqDurationSummary = Metrics.CreateHistogram("minitwit_request_duration_milliseconds", "Request duration distribution.");
@@ -188,6 +191,31 @@ if (app.Environment.IsEnvironment("testing"))
 
 // Den er er gemini den her til at teste om lortet virker ):
 app.UseMetricServer();
+
+app.Use(async (context, next) =>
+{
+    var watch = System.Diagnostics.Stopwatch.StartNew();
+    try
+    {
+        await next(context);
+    }
+    finally
+    {
+        watch.Stop();
+        var method = context.Request.Method;
+        var path = context.Request.Path.Value ?? "/";
+        var status = context.Response.StatusCode;
+        var ms = watch.Elapsed.TotalMilliseconds;
+        var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+        if (method != "GET" || status >= 400 || ms > 1000)
+        {
+            requestLogger.LogInformation(
+                "REQUEST {Method} {Path} {StatusCode} {DurationMs:F4}ms from {RemoteIp}",
+                method, path, status, ms, ip);
+        }
+    }
+});
 
 app.UseStaticFiles();
 app.UseRouting();
