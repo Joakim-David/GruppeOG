@@ -65,7 +65,6 @@ services:
       - "3000:3000"
     volumes:
       - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
-      - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
       - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
       - grafana-storage:/var/lib/grafana
     environment:
