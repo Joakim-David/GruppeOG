@@ -479,3 +479,12 @@ ehthumbs_vista.db
 *.db
 *.db-shm
 *.db-wal
+
+
+#Terraform file
+*.terraform
+*.tfstate
+*.hcl
+*.backup
+secrets
+ssh_key/
