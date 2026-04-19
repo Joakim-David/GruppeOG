@@ -487,4 +487,4 @@ ehthumbs_vista.db
 *.hcl
 *.backup
 secrets
-ssk_key/
+ssh_key/
