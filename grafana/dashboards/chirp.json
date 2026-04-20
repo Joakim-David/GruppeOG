@@ -7,6 +7,14 @@
   "time": { "from": "now-1h", "to": "now" },
   "panels": [
     {
+      "id": 100,
+      "title": "App Health",
+      "type": "row",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 },
+      "panels": []
+    },
+    {
       "id": 1,
       "title": "HTTP Request Rate (req/s)",
       "type": "timeseries",
