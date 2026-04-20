@@ -140,8 +140,13 @@ var requestLogger = app.Services.GetRequiredService<ILoggerFactory>()
     .CreateLogger("Chirp.Web.Request");
 
 var cpuGauge = Metrics.CreateGauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.");
+var memoryGauge = Metrics.CreateGauge("minitwit_memory_working_set_mb", "Process working set memory in MB.");
 var responseCounter = Metrics.CreateCounter("minitwit_http_responses_total", "The count of HTTP responses sent.");
 var reqDurationSummary = Metrics.CreateHistogram("minitwit_request_duration_milliseconds", "Request duration distribution.");
+
+var cpuSampleLock = new object();
+var lastCpuSampleAt = DateTime.UtcNow;
+var lastCpuTime = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
 
 // -----------------------------------------------------------------------------
 // Database initialization and seeding
@@ -223,13 +228,27 @@ app.UseRouting();
 // Track default HTTP metrics
 app.UseHttpMetrics();
 
-// Helges custom metrics tracker
+// Custom metrics tracker
 app.Use(async (context, next) =>
 {
     var watch = System.Diagnostics.Stopwatch.StartNew();
 
-    var process = System.Diagnostics.Process.GetCurrentProcess();
-    cpuGauge.Set(process.WorkingSet64 / 1024.0 / 1024.0);
+    lock (cpuSampleLock)
+    {
+        var now = DateTime.UtcNow;
+        var wallMs = (now - lastCpuSampleAt).TotalMilliseconds;
+        if (wallMs >= 1000)
+        {
+            var process = System.Diagnostics.Process.GetCurrentProcess();
+            var currentCpu = process.TotalProcessorTime;
+            var cpuMs = (currentCpu - lastCpuTime).TotalMilliseconds;
+            var percent = cpuMs / (wallMs * Environment.ProcessorCount) * 100.0;
+            cpuGauge.Set(Math.Clamp(percent, 0.0, 100.0));
+            memoryGauge.Set(process.WorkingSet64 / 1024.0 / 1024.0);
+            lastCpuTime = currentCpu;
+            lastCpuSampleAt = now;
+        }
+    }
 
     try
     {
