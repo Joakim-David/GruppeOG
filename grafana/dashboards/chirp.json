@@ -170,44 +170,6 @@
       }
     },
     {
-      "id": 9,
-      "title": "Logins (per minute)",
-      "type": "timeseries",
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-      "gridPos": { "x": 8, "y": 24, "w": 8, "h": 8 },
-      "targets": [
-        {
-          "expr": "sum(count_over_time({service_name=\"minitwit\"} |= \"User logged in\" [1m]))",
-          "legendFormat": "Logins/min"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "color": { "fixedColor": "light-green", "mode": "fixed" }
-        }
-      }
-    },
-    {
-      "id": 10,
-      "title": "Login Failures (per minute)",
-      "type": "timeseries",
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-      "gridPos": { "x": 16, "y": 24, "w": 8, "h": 8 },
-      "targets": [
-        {
-          "expr": "sum(count_over_time({service_name=\"minitwit\"} |= \"LoginFailed\" [1m]))",
-          "legendFormat": "Failures/min"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "color": { "fixedColor": "orange", "mode": "fixed" }
-        }
-      }
-    },
-    {
       "id": 11,
       "title": "Error Logs (per minute)",
       "type": "timeseries",
