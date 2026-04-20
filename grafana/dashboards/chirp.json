@@ -344,8 +344,16 @@
     },
 
     {
-      "id": 8,
-      "title": "New Registrations (per minute)",
+      "id": 103,
+      "title": "Business Activity",
+      "type": "row",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 41, "w": 24, "h": 1 },
+      "panels": []
+    },
+    {
+      "id": 13,
+      "title": "Cheeps Created (per minute)",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "gridPos": { "x": 0, "y": 24, "w": 12, "h": 8 },
