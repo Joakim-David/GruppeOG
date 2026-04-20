@@ -356,62 +356,53 @@
       "title": "Cheeps Created (per minute)",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 0, "y": 24, "w": 12, "h": 8 },
+      "gridPos": { "x": 0, "y": 42, "w": 12, "h": 8 },
       "targets": [
-        {
-          "expr": "rate(user_registrations_total[1m]) * 60",
-          "legendFormat": "Registrations/min"
-        }
+        { "expr": "rate(cheeps_send_total[1m]) * 60", "legendFormat": "Cheeps/min" }
       ],
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "color": { "fixedColor": "purple", "mode": "fixed" }
+          "color": { "fixedColor": "green", "mode": "fixed" },
+          "custom": { "fillOpacity": 10, "lineWidth": 2 }
         }
       }
     },
     {
-      "id": 11,
-      "title": "Error Logs (per minute)",
+      "id": 14,
+      "title": "Follows Created (per minute)",
       "type": "timeseries",
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-      "gridPos": { "x": 12, "y": 24, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "gridPos": { "x": 12, "y": 42, "w": 12, "h": 8 },
       "targets": [
-        {
-          "expr": "sum(count_over_time({service_name=\"minitwit\"} |~ \"(?i)exception|error\" [1m]))",
-          "legendFormat": "Errors/min"
-        }
+        { "expr": "rate(user_follows_total[1m]) * 60", "legendFormat": "Follows/min" }
       ],
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "color": { "fixedColor": "red", "mode": "fixed" }
+          "color": { "fixedColor": "blue", "mode": "fixed" },
+          "custom": { "fillOpacity": 10, "lineWidth": 2 }
         }
       }
     },
     {
-      "id": 12,
-      "title": "Total HTTP Responses (all time)",
-      "type": "stat",
+      "id": 15,
+      "title": "New Registrations (per minute)",
+      "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 0, "y": 32, "w": 12, "h": 8 },
+      "gridPos": { "x": 0, "y": 50, "w": 24, "h": 8 },
       "targets": [
-        {
-          "expr": "minitwit_http_responses_total",
-          "legendFormat": "Total Responses"
-        }
+        { "expr": "rate(user_registrations_total[1m]) * 60", "legendFormat": "Registrations/min" }
       ],
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [{ "color": "green", "value": null }]
-          }
+          "color": { "fixedColor": "purple", "mode": "fixed" },
+          "custom": { "fillOpacity": 10, "lineWidth": 2 }
         }
       }
     },
+
     {
       "id": 13,
       "title": "HTTP Request Rate by Status Code",
