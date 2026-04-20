@@ -47,14 +47,16 @@ jobs:
         run: |
           scp -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
             docker-compose.yml $SSH_USER@$SSH_HOST:~/docker-compose.yml
+          ssh $SSH_USER@$SSH_HOST -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
+            "rm -rf ~/grafana ~/monitoring ~/loki ~/alloy"
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
-            grafana $SSH_USER@$SSH_HOST:~/grafana
+            grafana $SSH_USER@$SSH_HOST:~/
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
-            monitoring $SSH_USER@$SSH_HOST:~/monitoring
+            monitoring $SSH_USER@$SSH_HOST:~/
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
-            loki $SSH_USER@$SSH_HOST:~/loki
+            loki $SSH_USER@$SSH_HOST:~/
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
-            alloy $SSH_USER@$SSH_HOST:~/alloy
+            alloy $SSH_USER@$SSH_HOST:~/
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
