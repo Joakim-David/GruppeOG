@@ -393,7 +393,7 @@
       "title": "Cheeps Created (per minute)",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 0, "y": 42, "w": 12, "h": 8 },
+      "gridPos": { "x": 0, "y": 50, "w": 12, "h": 8 },
       "targets": [
         { "expr": "rate(cheeps_send_total[1m]) * 60", "legendFormat": "Cheeps/min" }
       ],
@@ -410,7 +410,7 @@
       "title": "Follows Created (per minute)",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 12, "y": 42, "w": 12, "h": 8 },
+      "gridPos": { "x": 12, "y": 50, "w": 12, "h": 8 },
       "targets": [
         { "expr": "rate(user_follows_total[1m]) * 60", "legendFormat": "Follows/min" }
       ],
@@ -427,7 +427,7 @@
       "title": "New Registrations (per minute)",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 0, "y": 50, "w": 24, "h": 8 },
+      "gridPos": { "x": 0, "y": 58, "w": 24, "h": 8 },
       "targets": [
         { "expr": "rate(user_registrations_total[1m]) * 60", "legendFormat": "Registrations/min" }
       ],
@@ -445,7 +445,7 @@
       "title": "Error Tracking",
       "type": "row",
       "collapsed": false,
-      "gridPos": { "x": 0, "y": 58, "w": 24, "h": 1 },
+      "gridPos": { "x": 0, "y": 66, "w": 24, "h": 1 },
       "panels": []
     },
     {
@@ -453,7 +453,7 @@
       "title": "Error Logs (per minute)",
       "type": "timeseries",
       "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-      "gridPos": { "x": 0, "y": 59, "w": 24, "h": 8 },
+      "gridPos": { "x": 0, "y": 67, "w": 24, "h": 8 },
       "targets": [
         {
           "expr": "sum(count_over_time({service_name=\"minitwit\"} |~ \"(?i)exception|error\" [1m]))",
