@@ -48,7 +48,7 @@ jobs:
           scp -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
             docker-compose.yml $SSH_USER@$SSH_HOST:~/docker-compose.yml
           ssh $SSH_USER@$SSH_HOST -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
-            "rm -rf ~/grafana ~/monitoring ~/loki ~/alloy"
+            "docker compose stop grafana prometheus loki alloy && rm -rf ~/grafana ~/monitoring ~/loki ~/alloy"
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
             grafana $SSH_USER@$SSH_HOST:~/
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
