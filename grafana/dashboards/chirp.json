@@ -73,47 +73,42 @@
     },
     {
       "id": 4,
-      "title": "Memory Usage (MB)",
+      "title": "CPU Usage (%)",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 12, "y": 8, "w": 8, "h": 8 },
+      "gridPos": { "x": 12, "y": 8, "w": 6, "h": 8 },
       "targets": [
         {
           "expr": "minitwit_cpu_load_percent",
-          "legendFormat": "Working Set (MB)"
+          "legendFormat": "CPU %"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "decmbytes",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
           "color": { "fixedColor": "yellow", "mode": "fixed" }
         }
       }
     },
     {
       "id": 5,
-      "title": "Active HTTP Requests",
-      "type": "stat",
+      "title": "Memory Usage (MB)",
+      "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 20, "y": 8, "w": 4, "h": 8 },
+      "gridPos": { "x": 18, "y": 8, "w": 6, "h": 8 },
       "targets": [
         {
-          "expr": "sum(http_requests_in_progress)",
-          "legendFormat": "In Progress"
+          "expr": "minitwit_memory_working_set_mb",
+          "legendFormat": "Working Set (MB)"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
-          "color": { "mode": "thresholds" },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 50 },
-              { "color": "red", "value": 200 }
-            ]
-          }
+          "unit": "decmbytes",
+          "min": 0,
+          "color": { "fixedColor": "blue", "mode": "fixed" }
         }
       }
     },
@@ -121,11 +116,11 @@
       "id": 6,
       "title": "Cheeps Created (per minute)",
       "type": "timeseries",
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "sum(count_over_time({service=\"chirp-web\"} |= \"CheepCreated\" [1m]))",
+          "expr": "rate(cheeps_send_total[1m]) * 60",
           "legendFormat": "Cheeps/min"
         }
       ],
@@ -140,11 +135,11 @@
       "id": 7,
       "title": "Follows Created (per minute)",
       "type": "timeseries",
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "sum(count_over_time({service=\"chirp-web\"} |= \"FollowCreated\" [1m]))",
+          "expr": "rate(user_follows_total[1m]) * 60",
           "legendFormat": "Follows/min"
         }
       ],
@@ -163,7 +158,7 @@
       "gridPos": { "x": 0, "y": 24, "w": 8, "h": 8 },
       "targets": [
         {
-          "expr": "sum(count_over_time({service=\"chirp-web\"} |= \"User created a new account\" [1m]))",
+          "expr": "sum(count_over_time({service_name=\"minitwit\"} |= \"User created a new account\" [1m]))",
           "legendFormat": "Registrations/min"
         }
       ],
@@ -182,7 +177,7 @@
       "gridPos": { "x": 8, "y": 24, "w": 8, "h": 8 },
       "targets": [
         {
-          "expr": "sum(count_over_time({service=\"chirp-web\"} |= \"User logged in\" [1m]))",
+          "expr": "sum(count_over_time({service_name=\"minitwit\"} |= \"User logged in\" [1m]))",
           "legendFormat": "Logins/min"
         }
       ],
@@ -201,7 +196,7 @@
       "gridPos": { "x": 16, "y": 24, "w": 8, "h": 8 },
       "targets": [
         {
-          "expr": "sum(count_over_time({service=\"chirp-web\"} |= \"LoginFailed\" [1m]))",
+          "expr": "sum(count_over_time({service_name=\"minitwit\"} |= \"LoginFailed\" [1m]))",
           "legendFormat": "Failures/min"
         }
       ],
@@ -220,7 +215,7 @@
       "gridPos": { "x": 0, "y": 32, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "sum(count_over_time({service=\"chirp-web\", level=\"Error\"} [1m]))",
+          "expr": "sum(count_over_time({service_name=\"minitwit\", level=\"Error\"} [1m]))",
           "legendFormat": "Errors/min"
         }
       ],
