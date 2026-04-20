@@ -155,7 +155,7 @@
       "title": "New Registrations (per minute)",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 0, "y": 24, "w": 8, "h": 8 },
+      "gridPos": { "x": 0, "y": 24, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "rate(user_registrations_total[1m]) * 60",
@@ -174,10 +174,10 @@
       "title": "Error Logs (per minute)",
       "type": "timeseries",
       "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
-      "gridPos": { "x": 0, "y": 32, "w": 12, "h": 8 },
+      "gridPos": { "x": 12, "y": 24, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "sum(count_over_time({service_name=\"minitwit\", level=\"Error\"} [1m]))",
+          "expr": "sum(count_over_time({service_name=\"minitwit\"} |~ \"(?i)exception|error\" [1m]))",
           "legendFormat": "Errors/min"
         }
       ],
@@ -193,7 +193,7 @@
       "title": "Total HTTP Responses (all time)",
       "type": "stat",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 12, "y": 32, "w": 6, "h": 8 },
+      "gridPos": { "x": 0, "y": 32, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "minitwit_http_responses_total",
@@ -216,7 +216,7 @@
       "title": "HTTP Request Rate by Status Code",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 18, "y": 32, "w": 6, "h": 8 },
+      "gridPos": { "x": 12, "y": 32, "w": 12, "h": 8 },
       "targets": [
         {
           "expr": "rate(http_requests_received_total[1m])",
