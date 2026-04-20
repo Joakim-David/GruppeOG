@@ -154,11 +154,11 @@
       "id": 8,
       "title": "New Registrations (per minute)",
       "type": "timeseries",
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "gridPos": { "x": 0, "y": 24, "w": 8, "h": 8 },
       "targets": [
         {
-          "expr": "sum(count_over_time({service_name=\"minitwit\"} |= \"User created a new account\" [1m]))",
+          "expr": "rate(user_registrations_total[1m]) * 60",
           "legendFormat": "Registrations/min"
         }
       ],
