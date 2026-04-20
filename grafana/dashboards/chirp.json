@@ -404,21 +404,30 @@
     },
 
     {
-      "id": 13,
-      "title": "HTTP Request Rate by Status Code",
+      "id": 104,
+      "title": "Error Tracking",
+      "type": "row",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 58, "w": 24, "h": 1 },
+      "panels": []
+    },
+    {
+      "id": 16,
+      "title": "Error Logs (per minute)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
-      "gridPos": { "x": 12, "y": 32, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "gridPos": { "x": 0, "y": 59, "w": 24, "h": 8 },
       "targets": [
         {
-          "expr": "rate(http_requests_received_total[1m])",
-          "legendFormat": "{{code}} {{method}}"
+          "expr": "sum(count_over_time({service_name=\"minitwit\"} |~ \"(?i)exception|error\" [1m]))",
+          "legendFormat": "Errors/min"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "reqps",
-          "color": { "mode": "palette-classic" }
+          "unit": "short",
+          "color": { "fixedColor": "red", "mode": "fixed" },
+          "custom": { "fillOpacity": 10, "lineWidth": 2 }
         }
       }
     }
