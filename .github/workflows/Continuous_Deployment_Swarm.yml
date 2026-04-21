@@ -46,11 +46,11 @@ jobs:
           scp -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
             chirp_stack.yml $SSH_USER@$SSH_HOST:~/chirp_stack.yml
           ssh $SSH_USER@$SSH_HOST -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
-            "rm -rf ~/grafana ~/monitoring ~/loki ~/alloy"
+            "rm -rf ~/grafana ~/monitoring ~/loki ~/alloy && mkdir -p ~/monitoring"
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
             grafana $SSH_USER@$SSH_HOST:~/
-          scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
-            monitoring $SSH_USER@$SSH_HOST:~/
+          scp -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
+            monitoring/prometheus-swarm.yml $SSH_USER@$SSH_HOST:~/monitoring/prometheus.yml
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
             loki $SSH_USER@$SSH_HOST:~/
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
