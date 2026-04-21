@@ -134,9 +134,11 @@ resource "digitalocean_droplet" "swarm" {
         "ufw allow 4000",
         "ufw allow 7273",
         "ufw allow 9090",
+        "ufw allow 9095",
         "ufw allow 2377/tcp",
         "ufw allow 7946",
         "ufw allow 4789/udp",
+        "ufw default allow routed",
         "ufw --force enable",
 
         # prepare folders
