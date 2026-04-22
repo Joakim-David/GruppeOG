@@ -49,7 +49,9 @@ public class SimulatorController : ControllerBase
     {
         try
         {
-            System.IO.File.WriteAllText(LatestFilePath, value.ToString());
+            var tempPath = LatestFilePath + ".tmp";
+            System.IO.File.WriteAllText(tempPath, value.ToString());
+            System.IO.File.Move(tempPath, LatestFilePath, overwrite: true);
         }
         catch { }
     }
