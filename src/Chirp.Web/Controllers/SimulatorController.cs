@@ -30,7 +30,29 @@ public class SimulatorController : ControllerBase
     /// Global counter tracking the most recent 'latest' value received from the simulator.
     /// Used to track simulator progress through test sequences.
     /// </summary>
-    private static int _latest = 0;
+    private const string LatestFilePath = "/app/data/latest.txt";
+
+    private static int ReadLatest()
+    {
+        try
+        {
+            var text = System.IO.File.ReadAllText(LatestFilePath).Trim();
+            return int.TryParse(text, out var val) ? val : 0;
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
+    private static void WriteLatest(int value)
+    {
+        try
+        {
+            System.IO.File.WriteAllText(LatestFilePath, value.ToString());
+        }
+        catch { }
+    }
 
     /// <summary>
     /// Expected Authorization header value for simulator authentication.
@@ -106,7 +128,7 @@ public class SimulatorController : ControllerBase
             return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
 
         if (latest.HasValue)
-            _latest = latest.Value;
+            WriteLatest(latest.Value);
 
         var cheeps = await _cheepService.GetNLatestCheeps(null, no);
 
@@ -132,7 +154,7 @@ public class SimulatorController : ControllerBase
             return StatusCode(403, new { status = 403, error_msg = "You are not authorized to use this resource!" });
 
         if (latest.HasValue)
-            _latest = latest.Value;
+            WriteLatest(latest.Value);
 
         if (Request.Method == "GET")
         {
@@ -205,7 +227,7 @@ public class SimulatorController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] JsonElement request, [FromQuery] int? latest = null)
     {
-        if (latest.HasValue) _latest = latest.Value;
+        if (latest.HasValue) WriteLatest(latest.Value);
 
         try
         {
@@ -265,7 +287,7 @@ public class SimulatorController : ControllerBase
     [HttpGet("latest")]
     public IActionResult GetLatest()
     {
-        return Ok(new { latest = _latest });
+        return Ok(new { latest = ReadLatest() });
     }
 
     /// <summary>
@@ -300,7 +322,7 @@ public class SimulatorController : ControllerBase
         [FromQuery] int? latest = null)
     {
         if (!IsAuthorized(auth)) return StatusCode(403, new { status = 403, error_msg = "You are not authorized..." });
-        if (latest.HasValue) _latest = latest.Value;
+        if (latest.HasValue) WriteLatest(latest.Value);
 
         if (Request.Method == "POST")
         {
