@@ -89,7 +89,7 @@
             }
             <span>Page @currentPage</span>
 
-            <a id="next" href="/?pageIndex=@(currentPage + 1)&search=@Request.Query["search"]">Next</a>
+            <a id="next" href="/?pageIndex=@(currentPage + 1)&search=@safeSearch">Next</a>
         </div>
     }
     else
