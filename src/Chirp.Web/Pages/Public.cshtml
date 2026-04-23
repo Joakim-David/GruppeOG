@@ -98,7 +98,7 @@
         <br/>
         @if (currentPage > 1)
         {
-            <a href="/?pageIndex=@(currentPage - 1)&search=@Request.Query["search"]">Prev</a>
+            <a href="/?pageIndex=@(currentPage - 1)&search=@safeSearch">Prev</a>
         }
         <span>Page @currentPage</span>
     }
