@@ -33,20 +33,20 @@
                                 var isFollowing = await Model.IsFollowingAsync(User.Identity.Name!, cheep.Author.Name);
                                 if (isFollowing)
                                 {
-                                    <form method="post" asp-page-handler="Unfollow" asp-route-search="@Request.Query["search"]" asp-route-pageIndex="@Model.PageIndex" style="display:inline;">
+                                    <form method="post" asp-page-handler="Unfollow" asp-route-search="@safeSearch" asp-route-pageIndex="@Model.PageIndex" style="display:inline;">
                                         <button type="submit" class="btn btn-link p-0" name="unfollow"
                                             value="@cheep.Author.Name">unfollow</button>
                                     </form>
                                 }
                                 else
                                 {
-                                    <form method="post" asp-page-handler="Follow" asp-route-search="@Request.Query["search"]" asp-route-pageIndex="@Model.PageIndex" style="display:inline;">
+                                    <form method="post" asp-page-handler="Follow" asp-route-search="@safeSearch" asp-route-pageIndex="@Model.PageIndex" style="display:inline;">
                                         <button type="submit" class="btn btn-link p-0" name="follow"
                                             value="@cheep.Author.Name">follow</button>
                                     </form>
                                 }
 
-                                <form method="post" asp-page-handler="RemoveSave" asp-route-search="@Request.Query["search"]" asp-route-pageIndex="@Model.PageIndex" style="display:inline;">
+                                <form method="post" asp-page-handler="RemoveSave" asp-route-search="@safeSearch" asp-route-pageIndex="@Model.PageIndex" style="display:inline;">
                                     <button type="submit" class="btn btn-link p-0" name="unsave"
                                         value="@cheep.CheepId">unsave</button>
                                 </form>
