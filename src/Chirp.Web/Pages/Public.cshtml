@@ -48,7 +48,7 @@
                                 var isFollowing = await Model.IsFollowingAsync(User.Identity.Name!, cheep.Author.Name);
                                 if (isFollowing)
                                 {
-                                    <form method="post" asp-page-handler="Unfollow" asp-route-search="@Request.Query["search"]" asp-route-pageIndex="@Model.PageIndex" style="display:inline;">
+                                    <form method="post" asp-page-handler="Unfollow" asp-route-search="@safeSearch" asp-route-pageIndex="@Model.PageIndex" style="display:inline;">
                                         <button type="submit" class="btn btn-link p-0" name="unfollow"
                                             value="@cheep.Author.Name">unfollow</button>
                                     </form>
