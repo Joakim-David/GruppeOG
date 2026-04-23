@@ -5,6 +5,7 @@
     Layout = "Shared/_Layout";
     int currentPage = 1;
     var pageQuery = Model.HttpContext.Request.Query["pageIndex"];
+    var safeSearch = System.Net.WebUtility.HtmlEncode(Request.Query["search"].ToString());
     if (!string.IsNullOrEmpty(pageQuery))
     {
         int.TryParse(pageQuery, out currentPage);
