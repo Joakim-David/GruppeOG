@@ -39,7 +39,11 @@ public class SimulatorController : ControllerBase
             var text = System.IO.File.ReadAllText(LatestFilePath).Trim();
             return int.TryParse(text, out var val) ? val : 0;
         }
-        catch
+        catch (System.IO.IOException)
+        {
+            return 0;
+        }
+        catch (UnauthorizedAccessException)
         {
             return 0;
         }
