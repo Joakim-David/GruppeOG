@@ -19,35 +19,35 @@ discovery.relabel "docker" {
 
     rule {
         source_labels = ["__meta_docker_container_name"]
-        regex         = "/chirp"
+        regex         = "/(chirp$|chirp_chirpserver\\..*)"
         target_label  = "service_name"
         replacement   = "minitwit"
     }
 
     rule {
         source_labels = ["__meta_docker_container_name"]
-        regex         = "/loki"
+        regex         = "/(loki$|chirp_loki\\..*)"
         target_label  = "service_name"
         replacement   = "loki"
     }
 
     rule {
         source_labels = ["__meta_docker_container_name"]
-        regex         = "/grafana"
+        regex         = "/(grafana$|chirp_grafana\\..*)"
         target_label  = "service_name"
         replacement   = "grafana"
     }
 
     rule {
         source_labels = ["__meta_docker_container_name"]
-        regex         = "/prometheus"
+        regex         = "/(prometheus$|chirp_prometheus\\..*)"
         target_label  = "service_name"
         replacement   = "prometheus"
     }
 
     rule {
         source_labels = ["__meta_docker_container_name"]
-        regex         = "/alloy"
+        regex         = "/(alloy$|chirp_alloy\\..*)"
         target_label  = "service_name"
         replacement   = "alloy"
     }
