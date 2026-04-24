@@ -53,9 +53,7 @@ public class SimulatorController : ControllerBase
     {
         try
         {
-            var tempPath = LatestFilePath + ".tmp";
-            System.IO.File.WriteAllText(tempPath, value.ToString());
-            System.IO.File.Move(tempPath, LatestFilePath, overwrite: true);
+            System.IO.File.WriteAllText(LatestFilePath, value.ToString());
         }
         catch (System.IO.IOException) { }
         catch (UnauthorizedAccessException) { }
