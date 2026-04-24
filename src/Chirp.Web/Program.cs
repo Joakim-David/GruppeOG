@@ -142,7 +142,13 @@ var requestLogger = app.Services.GetRequiredService<ILoggerFactory>()
 var cpuGauge = Metrics.CreateGauge("minitwit_cpu_load_percent", "Current load of the CPU in percent.");
 var memoryGauge = Metrics.CreateGauge("minitwit_memory_working_set_mb", "Process working set memory in MB.");
 var responseCounter = Metrics.CreateCounter("minitwit_http_responses_total", "The count of HTTP responses sent.");
-var reqDurationSummary = Metrics.CreateHistogram("minitwit_request_duration_milliseconds", "Request duration distribution.");
+var reqDurationSummary = Metrics.CreateHistogram(
+    "minitwit_request_duration_milliseconds",
+    "Request duration distribution in milliseconds.",
+    new HistogramConfiguration
+    {
+        Buckets = new[] { 1.0, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000 }
+    });
 
 var cpuSampleLock = new object();
 var lastCpuSampleAt = DateTime.UtcNow;
