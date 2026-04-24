@@ -65,7 +65,7 @@ jobs:
             "docker login -u '$DOCKER_USERNAME' -p '$DOCKER_PASSWORD' && \
              export POSTGRES_PSW='$POSTGRES_PSW' && \
              docker stack deploy -c ~/chirp_stack.yml chirp --with-registry-auth && \
-             docker service update --image $DOCKER_USERNAME/minitwitimage:latest --update-parallelism 0 chirp_chirpserver --with-registry-auth && \
+             docker service update --image $DOCKER_USERNAME/minitwitimage:latest --update-parallelism 0 --force chirp_chirpserver --with-registry-auth && \
              docker service update --force chirp_grafana && \
              docker service update --force chirp_prometheus && \
              docker service update --force chirp_loki && \
