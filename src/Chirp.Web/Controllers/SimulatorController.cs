@@ -53,7 +53,8 @@ public class SimulatorController : ControllerBase
             System.IO.File.WriteAllText(tempPath, value.ToString());
             System.IO.File.Move(tempPath, LatestFilePath, overwrite: true);
         }
-        catch { }
+        catch (System.IO.IOException) { }
+        catch (UnauthorizedAccessException) { }
     }
 
     /// <summary>
