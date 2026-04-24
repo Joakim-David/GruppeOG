@@ -153,6 +153,7 @@ resource "digitalocean_droplet" "swarm" {
         "mv /root/loki-config.yml /root/loki/loki-config.yml",
         "mv /root/datasource.yml /root/grafana/datasource.yml",
         "mv /root/dashboards/* /root/grafana/dashboards/",
+        "chmod 666 /root/latest.txt",
 
         # initialize swarm
         "docker swarm init --advertise-addr ${self.ipv4_address}",
