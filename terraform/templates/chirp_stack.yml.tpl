@@ -1,0 +1,129 @@
+version: "3.8"
+
+services:
+  chirpserver:
+    image: bennyboomblaster/minitwitimage:latest
+
+    ports:
+      - target: 7273
+        published: 7273
+        protocol: tcp
+        mode: ingress
+
+    environment:
+      - ConnectionStrings__DefaultConnection=${connection_string}
+
+    volumes:
+      - ./latest.txt:/app/data/latest.txt
+
+    networks:
+      - itu-minitwit-network
+
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+  alloy:
+    image: grafana/alloy@sha256:e3a1fff5eee8e2535fb75b350d0ccb722149720c788e57fd8d93b33e9163d85b
+
+    command: run --server.http.listen-addr=0.0.0.0:4000 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+
+    ports:
+      - target: 4000
+        published: 4000
+        protocol: tcp
+        mode: ingress
+
+    volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+    networks:
+      - itu-minitwit-network
+
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  loki:
+    image: grafana/loki@sha256:535a14ffef1d48099fc7f940da51bbcb253fcc63c6918e070f60caa53c82bf5c
+
+    command: -config.file=/etc/loki/loki-config.yml
+
+    ports:
+      - target: 3100
+        published: 3100
+        protocol: tcp
+        mode: ingress
+
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/loki-config.yml
+      - loki-data:/loki
+
+    networks:
+      - itu-minitwit-network
+
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  prometheus:
+    image: prom/prometheus@sha256:4a61322ac1103a0e3aea2a61ef1718422a48fa046441f299d71e660a3bc71ae9
+
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+    ports:
+      - target: 9090
+        published: 9090
+        protocol: tcp
+        mode: ingress
+
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+    networks:
+      - itu-minitwit-network
+
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  grafana:
+    image: grafana/grafana@sha256:7227fe2aca02ad399c8de438ceaae7687415da2abc763665795858edbe48819c
+
+    ports:
+      - target: 3000
+        published: 3000
+        protocol: tcp
+        mode: ingress
+
+    environment:
+      - GF_SECURITY_ADMIN_USER=helgeandfriends
+      - GF_SECURITY_ADMIN_PASSWORD=sesame0uvr3toi
+      - GF_USERS_ALLOW_SIGN_UP=false
+
+    volumes:
+      - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - grafana-storage:/var/lib/grafana
+
+    networks:
+      - itu-minitwit-network
+
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  itu-minitwit-network:
+    driver: overlay
+
+volumes:
+  grafana-storage:
+  loki-data:
