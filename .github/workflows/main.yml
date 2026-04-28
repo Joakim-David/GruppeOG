@@ -3,6 +3,8 @@ name: .NET
 on:
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - 'report/**'
   schedule:
     - cron: '0 12 * * 2'
 

@@ -92,7 +92,7 @@ resource "digitalocean_droplet" "swarm" {
 
   provisioner "file" {
     source      = "monitoring/prometheus-swarm.yml"
-    destination = "/root/prometheus.yml"
+    destination = "/root/prometheus-swarm.yml"
   }
 
   provisioner "file" {

@@ -3,6 +3,8 @@ name: ShellCheck
 on:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'report/**'
 jobs:
   shellcheck:
     name: ShellCheck

@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'report/**'
   schedule:
     - cron: '0 12 * * 2'
   workflow_dispatch:

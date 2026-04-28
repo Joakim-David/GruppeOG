@@ -3,6 +3,8 @@ name: Release Chirp
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'report/**'
 
 permissions:
   contents: write
