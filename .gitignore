@@ -484,7 +484,9 @@ ehthumbs_vista.db
 #Terraform file
 *.terraform
 *.tfstate
+*.tfvars
 *.hcl
 *.backup
 secrets
 ssh_key/
+secrets copy

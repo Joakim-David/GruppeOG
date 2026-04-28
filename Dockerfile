@@ -23,6 +23,7 @@ RUN dotnet publish -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-noble-chiseled AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
+COPY --chown=app:app latest.txt /app/data/latest.txt
 
 USER app
 
