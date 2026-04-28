@@ -454,15 +454,23 @@
       "gridPos": { "x": 0, "y": 67, "w": 24, "h": 8 },
       "targets": [
         {
-          "expr": "sum(count_over_time({service_name=\"minitwit\"} |~ \"(?i)exception|error\" [1m]))",
+          "expr": "sum(count_over_time({service_name=\"minitwit\"} |~ \"(?i)exception|error\" [1m])) or vector(0)",
           "legendFormat": "Errors/min"
         }
       ],
       "fieldConfig": {
         "defaults": {
           "unit": "short",
+          "min": 0,
+          "noValue": "0",
           "color": { "fixedColor": "red", "mode": "fixed" },
-          "custom": { "fillOpacity": 10, "lineWidth": 2 }
+          "custom": {
+            "fillOpacity": 10,
+            "lineWidth": 2,
+            "lineInterpolation": "linear",
+            "spanNulls": true,
+            "showPoints": "never"
+          }
         }
       }
     }
