@@ -1,10 +1,6 @@
 name: Lint C#
 
 on:
-  push:
-    branches: [main, develop]
-    paths-ignore:
-      - 'report/**'
   pull_request:
     branches: [main]
     paths-ignore:
