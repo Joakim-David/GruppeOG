@@ -219,12 +219,9 @@ app.Use(async (context, next) =>
         var ms = watch.Elapsed.TotalMilliseconds;
         var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
-        if (method != "GET" || status >= 400 || ms > 1000)
-        {
-            requestLogger.LogInformation(
-                "REQUEST {Method} {Path} {StatusCode} {DurationMs:F4}ms from {RemoteIp}",
-                method, path, status, ms, ip);
-        }
+        requestLogger.LogInformation(
+            "REQUEST {Method} {Path} {StatusCode} {DurationMs:F4}ms from {RemoteIp}",
+            method, path, status, ms, ip);
     }
 });
 
