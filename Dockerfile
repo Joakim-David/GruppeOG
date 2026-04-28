@@ -17,8 +17,7 @@ RUN dotnet restore
 # Copy everything else and build
 COPY . .
 WORKDIR /src/src/Chirp.Web
-RUN dotnet publish -c Release -o /app/publish
-RUN mkdir -p /app/data
+RUN dotnet publish -c Release -o /app/publish && mkdir -p /app/data
 
 # Use runtime image for running
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-noble-chiseled AS runtime
