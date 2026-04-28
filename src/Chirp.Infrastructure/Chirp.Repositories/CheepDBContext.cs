@@ -63,6 +63,11 @@ public class CheepDBContext : IdentityDbContext<Author, IdentityRole<int>, int>
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
+        // Add index on Cheep.TimeStamp for fast public timeline queries (ORDER BY time_stamp DESC)
+        builder.Entity<Cheep>()
+            .HasIndex(c => c.TimeStamp)
+            .IsDescending();
+
         // Configure the SavedCheep entity (many-to-many relationship with payload)
         builder.Entity<SavedCheep>(entity =>
         {
