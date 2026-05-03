@@ -1,10 +1,10 @@
 name: Hadolint
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'report/**'
 
 jobs:
   hadolint:

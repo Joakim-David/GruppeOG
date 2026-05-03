@@ -1,0 +1,44 @@
+name: Build Report PDF
+
+on:
+  push:
+    paths:
+      - 'report/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build PDF
+        uses: docker://pandoc/extra:latest
+        with:
+          args: >-
+            report/report.md
+            -o report/build/BSc_group_g.pdf
+            --pdf-engine=pdflatex
+            --resource-path=report:report/images
+            -V colorlinks=true
+            -V linkcolor=blue
+            -V urlcolor=blue
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BSc_group_g
+          path: report/build/BSc_group_g.pdf
+
+      - name: Commit PDF to repo
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add report/build/BSc_group_g.pdf
+          git diff --staged --quiet || git commit -m "Build report PDF"
+          git push

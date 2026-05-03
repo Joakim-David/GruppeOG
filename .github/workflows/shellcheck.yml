@@ -1,10 +1,10 @@
 name: ShellCheck
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'report/**'
 jobs:
   shellcheck:
     name: ShellCheck
