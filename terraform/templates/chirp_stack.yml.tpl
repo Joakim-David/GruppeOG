@@ -23,6 +23,9 @@ services:
       replicas: 2
       restart_policy:
         condition: on-failure
+      resources:
+        limits:
+          memory: 200M
 
   alloy:
     image: grafana/alloy@sha256:e3a1fff5eee8e2535fb75b350d0ccb722149720c788e57fd8d93b33e9163d85b
@@ -46,6 +49,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      resources:
+        limits:
+          memory: 72M
 
   loki:
     image: grafana/loki@sha256:535a14ffef1d48099fc7f940da51bbcb253fcc63c6918e070f60caa53c82bf5c
@@ -69,6 +75,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      resources:
+        limits:
+          memory: 150M
 
   prometheus:
     image: prom/prometheus@sha256:4a61322ac1103a0e3aea2a61ef1718422a48fa046441f299d71e660a3bc71ae9
@@ -84,6 +93,7 @@ services:
 
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
 
     networks:
       - itu-minitwit-network
@@ -92,6 +102,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      resources:
+        limits:
+          memory: 80M
 
   grafana:
     image: grafana/grafana@sha256:7227fe2aca02ad399c8de438ceaae7687415da2abc763665795858edbe48819c
@@ -119,6 +132,9 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      resources:
+        limits:
+          memory: 128M
 
 networks:
   itu-minitwit-network:
@@ -127,3 +143,4 @@ networks:
 volumes:
   grafana-storage:
   loki-data:
+  prometheus-data:
