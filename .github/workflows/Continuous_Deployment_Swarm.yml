@@ -52,7 +52,7 @@ jobs:
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
             grafana $SSH_USER@$SSH_HOST:~/
           scp -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
-            monitoring/prometheus-swarm.yml $SSH_USER@$SSH_HOST:~/monitoring/prometheus.yml
+            monitoring/prometheus.yml $SSH_USER@$SSH_HOST:~/monitoring/prometheus.yml
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \
             loki $SSH_USER@$SSH_HOST:~/
           scp -r -i ~/.ssh/do_ssh_key -o StrictHostKeyChecking=no \

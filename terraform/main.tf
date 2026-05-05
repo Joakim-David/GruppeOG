@@ -91,8 +91,8 @@ resource "digitalocean_droplet" "swarm" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/../monitoring/prometheus-swarm.yml"
-    destination = "/root/prometheus-swarm.yml"
+    source      = "${path.module}/../monitoring/prometheus.yml"
+    destination = "/root/prometheus.yml"
   }
 
   provisioner "file" {
@@ -148,7 +148,7 @@ resource "digitalocean_droplet" "swarm" {
       "mkdir -p /root/grafana/dashboards",
 
       # move files into expected locations
-      "mv /root/prometheus-swarm.yml /root/monitoring/prometheus.yml",
+      "mv /root/prometheus.yml /root/monitoring/prometheus.yml",
       "mv /root/config.alloy /root/alloy/config.alloy",
       "mv /root/loki-config.yml /root/loki/loki-config.yml",
       "mv /root/datasource.yml /root/grafana/datasource.yml",
