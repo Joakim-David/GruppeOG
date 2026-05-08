@@ -45,9 +45,15 @@ TODO: What do you log in your systems and how do you aggregate logs?
 <!-- Author(s): Joakim -->
 TODO: Brief description of how you security hardened your systems.
 
-## Scaling and Load Balancing
+## Availability and Scaling
 <!-- Author(s): Bondo -->
 TODO: How do you handle availability and scaling in your systems?
+
+Our application runs on a single DigitalOcean droplet using Docker Swarm, which orchestrates two replicas of our Chirp container, each capped at 200 MB of memory. Swarm's built-in load balancer distributes incoming requests evenly across both replicas, and all services are configured with restart_policy: on-failure, so the swarm manager automatically restarts any failed container. A DigitalOcean reserved IP is assigned to the droplet via Terraform, ensuring a stable endpoint even if the underlying VM is replaced.
+
+We have applied both vertical and horizontal scaling. We vertically scaled our managed PostgreSQL cluster by upgrading from 1 GB to 2 GB of RAM, which improved query performance. We horizontally scaled the application layer by moving from a single container to two Swarm replicas. The entire infrastructure — droplet, database cluster, firewall rules, and reserved IP is defined in Terraform and can be reproduced from scratch with a single terraform apply.
+
+The main limitation is single points of failure: we rely on one droplet and one database node. Adding a database replica would be the highest-value improvement, both for data redundancy and because the database is the primary performance bottleneck.
 
 
 # Reflection Perspective
