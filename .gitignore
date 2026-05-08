@@ -490,3 +490,6 @@ ehthumbs_vista.db
 secrets
 ssh_key/
 secrets copy
+
+# Generated report PDF
+report/build/*.pdf
