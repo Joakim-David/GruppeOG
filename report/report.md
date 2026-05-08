@@ -18,93 +18,69 @@ header-includes:
 ---
 
 # System's Perspective
-
 ## Design and Architecture
-
-<!-- Author(s): -->
-
-TODO: Describe the design and architecture of your ITU-MiniTwit systems.
+<!-- Author(s): Bondo -->
+TODO: Design and architecture of your ITU-MiniTwit systems.
 
 ## Dependencies
-
-<!-- Author(s): -->
-
-TODO: List and briefly describe all technologies and tools you used.
-
-## Important Interactions of Subsystems
-
-<!-- Author(s): -->
-
-TODO: Describe the important interactions of subsystems, e.g., via sequence diagrams.
+<!-- Author(s): Jacob eller Jacob -->
+TODO: All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 
 ## Current State of the System
-
-<!-- Author(s): -->
-
-TODO: Describe the current state of your systems. What is working, what is not?
-
-## License
-
-<!-- Author(s): -->
-
-TODO: State the license you chose and motivate your choice.
+<!-- Author(s): Emilie -->
+TODO: Describe the current state of your systems, for example using results of static analysis and quality assessments.
 
 # Process' Perspective
+TOBEDELETED: This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
 
-## Developer Interaction
-
-<!-- Author(s): -->
-
-TODO: How do you interact as developers? How is the team organized?
 
 ## CI/CD Chains
-
-<!-- Author(s): -->
-
-TODO: Describe your CI/CD setup and its stages.
+<!-- Author(s): Emilie -->
+TODO: A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 
 ## Monitoring
-
-<!-- Author(s): -->
-
-TODO: How do you monitor your system? What do you monitor?
+<!-- Author(s): Jacob -->
+TODO: How do you monitor your systems and what precisely do you monitor?
 
 ## Logging
-
-<!-- Author(s): -->
-
-TODO: What do you log? How do you aggregate logs?
+<!-- Author(s): Jacob -->
+TODO: What do you log in your systems and how do you aggregate logs?
 
 ## Security Assessment
-
-<!-- Author(s): -->
-
-TODO: Brief results of your security assessment.
+<!-- Author(s): Joakim -->
+TODO: Brief description of how you security hardened your systems.
 
 ## Scaling and Load Balancing
+<!-- Author(s): Bondo -->
+TODO: How do you handle availability and scaling in your systems?
 
-<!-- Author(s): -->
-
-TODO: Applied strategy for scaling and load balancing (if any).
-
-# Lessons Learned Perspective
+# Reflection Perspective
+TOBEDELETED: Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
 
 ## Evolution and Refactoring
-
-<!-- Author(s): -->
-
+<!-- Author(s): Emilie og Joakim -->
 TODO: Describe the biggest issues, interactions, and bugs during the project.
+NOTE: convert from old chirp to new thing with API
+NOTE: Migration to postgres
 
-## DevOps Style
+## operation
+<!-- Author(s): Bondo -->
+TODO: From docker compose to terraform and docker swarm.
 
-<!-- Author(s): -->
+## maintenance
+<!-- Author(s): Jacob eller Jacob -->
+TODO: 
 
-TODO: Reflect on how your work practices aligned with DevOps principles.
+# Use of generative AI
+<!-- Author(s): Joakim  -->
+
+TOBEDELETED: ITU's rules on the use of generative AI apply for this report too. They are described here and in detail here. Please follow them. For your report that means that you have to state which generative AI tools have been used for which task(s) in your projects. Additionally, describe how generative AI tools have been used and briefly reflect and discuss how they supported or hindered your work process.
+NOTE: like 2 senteces about this
 
 ## References
-
 <!-- Link all artifacts: repositories, issue trackers, monitoring/logging systems, etc. -->
 
 - **Repository:** <https://github.com/Joakim-David/GruppeOG>
-- **Monitoring:** Grafana at `http://142.93.169.145:3000`
+- **Chirp URL:** <https://chirpitu.live>
+- **Monitoring:** Grafana at `http://209.38.190.12:3000`
 - **Issue Tracker:** <https://github.com/Joakim-David/GruppeOG/issues>
