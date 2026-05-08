@@ -1,12 +1,7 @@
 ---
 title: "ITU-MiniTwit Report"
-subtitle: "BSc Group G"
-author:
-  - Jacob Folkmann (jafo@itu.dk)
-  - Joakim-David (jpre@itu.dk)
-  - Jacob Hørberg (jacho@itu.dk)
-  - Rasmus Bondo (rabh@itu.dk)
-  - Emilie Bliddal Ravn Larsen (emrl@itu.dk)
+subtitle: "\\centerline{BSc Group G}\\centerline{DevOps, Software Evolution and Software Maintenance}\\centerline{BSDSESM1KU}"
+author: "\\shortstack{Emilie Bliddal Ravn Larsen (emrl@itu.dk) \\\\\\\\ Jacob Folkmann (jafo@itu.dk) \\\\\\\\ Jacob Hørberg (jacho@itu.dk) \\\\\\\\ Joakim-David (jpre@itu.dk) \\\\\\\\ Rasmus Bondo (rabh@itu.dk)}"
 date: "Spring 2026"
 geometry: margin=2.5cm
 fontsize: 11pt
@@ -53,6 +48,7 @@ TODO: Brief description of how you security hardened your systems.
 ## Scaling and Load Balancing
 <!-- Author(s): Bondo -->
 TODO: How do you handle availability and scaling in your systems?
+
 
 # Reflection Perspective
 TOBEDELETED: Describe the biggest issues, how you solved them, and which are major lessons learned with regards to:
