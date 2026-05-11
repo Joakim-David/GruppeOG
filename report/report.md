@@ -38,7 +38,20 @@ TODO: A complete description and illustration of stages and tools included in th
 TODO: How do you monitor your systems and what precisely do you monitor?
 
 ## Logging
-<!-- Author(s): Jacob -->
+<!-- Author(s): Jacob F-->
+Our Logs are displayed on our grafana webserver where they can be view under drilldown/logs. We use a stack compromised by grafana, loki and alloy. Alloy is used to collect the logs from the docker containers on the droplet and then ships them to Loki. 
+Loki then stores and index the logs and in the end grafana then uses loki as a datasource to visualise the logs and makes them easily accessible to search and discover.
+
+The logs are aggregated so we have logs from each of the individual chirp servers, Loki, grafana and prometheus. 
+
+### What we log from chirp
+In program.cs we log every incoming request including the method, path, status code, duration and IP.
+
+### Alloy 
+With grafana alloy we collect all stdout/stderr from every docker container on the droplet. This includes logs from exceptions and the chirp application
+### Aggregation
+The logs from our two chirp webservers is aggregated under one handle otherwise it is also possible to search the individual containers.
+
 TODO: What do you log in your systems and how do you aggregate logs?
 
 ## Security Assessment
