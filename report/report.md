@@ -18,9 +18,19 @@ header-includes:
 TODO: Design and architecture of your ITU-MiniTwit systems.
 
 ## Dependencies
-<!-- Author(s): Jacob eller Jacob -->
+<!-- Author(s): Jacob F -->
 TODO: All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
 
+The Chirp application is built on .NET 9.0 with ASP.NET Core (Razor Pages). Entity Framework Core 9.0 is used as the ORM, backed by PostgreSQL 17 in production and SQLite for local development. Authentication is     
+handled by ASP.NET Identity for local accounts and GitHub OAuth for third-party login.
+
+The application runs in a Docker container (runtime image aspnet:9.0-noble-chiseled) and is deployed as a Docker Swarm stack on a DigitalOcean Droplet. Infrastructure is provisioned with Terraform, including a       
+managed PostgreSQL cluster and a reserved IP. The observability stack consists of Prometheus for metrics, Grafana Alloy for log collection, Loki for log storage, and Grafana for visualization.
+
+CI/CD is handled by GitHub Actions. Pipelines cover building, testing, and deploying to Docker Swarm via Docker Hub. Security tooling includes CodeQL for static analysis, Trivy for container image scanning, Hadolint
+for Dockerfile linting, and ShellCheck for shell script linting. The report itself is built from Markdown to PDF using Pandoc.
+
+Testing uses xUnit and NUnit for unit and integration tests, Coverlet for code coverage, and Playwright for end-to-end browser testing.
 ## Current State of the System
 <!-- Author(s): Emilie -->
 TODO: Describe the current state of your systems, for example using results of static analysis and quality assessments.
@@ -34,7 +44,7 @@ TOBEDELETED: This perspective should clarify how code or other artifacts come fr
 TODO: A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 
 ## Monitoring
-<!-- Author(s): Jacob -->
+<!-- Author(s): Jacob H-->
 TODO: How do you monitor your systems and what precisely do you monitor?
 
 ## Logging
