@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Side-1" id="QXlxEs7GyKECeyoFyt78">
-    <mxGraphModel dx="2669" dy="580" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2725" dy="612" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -324,6 +324,18 @@
         </mxCell>
         <mxCell id="7cdfzSgo-fd5Nwsij4lV-141" parent="1" style="whiteSpace=wrap;html=1;" value="DockerHub" vertex="1">
           <mxGeometry height="40" width="90" x="-700" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="7cdfzSgo-fd5Nwsij4lV-154" parent="1" style="html=1;whiteSpace=wrap;" value="Nginx" vertex="1">
+          <mxGeometry height="50" width="110" x="-1039" y="606" as="geometry" />
+        </mxCell>
+        <mxCell id="7cdfzSgo-fd5Nwsij4lV-155" parent="1" style="html=1;whiteSpace=wrap;" value="Digital Ocean Reserved IP" vertex="1">
+          <mxGeometry height="50" width="110" x="-870" y="607" as="geometry" />
+        </mxCell>
+        <mxCell id="7cdfzSgo-fd5Nwsij4lV-156" parent="1" style="html=1;whiteSpace=wrap;" value="&lt;br&gt;&lt;div&gt;Certbot&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="110" x="-1160" y="605" as="geometry" />
+        </mxCell>
+        <mxCell id="7cdfzSgo-fd5Nwsij4lV-157" parent="1" style="html=1;whiteSpace=wrap;" value="LLMs" vertex="1">
+          <mxGeometry height="50" width="110" x="-979" y="665" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
