@@ -56,12 +56,11 @@ to ensure the input is treated as plain text rather than exceutable code.
 To mitigate this, we transitioned to the minimal aspnet:9.0-noble-chiseled base image, which removes standard OS utilities (like bash)
 to restrict attacker mobility. Trivy now acts as a strict quality gate by enforcing an --exit-code 1 policy, blocking deployments if any high or critical vulnerabilities are detected.
 
-**Hadolint** - our Dockerfile linter. It continuously audits our container configurations to enforce security best practices, 
-such as ensuring the application runs exclusively as the non-root app user. To prevent configuration regressions, 
-it is integrated into our pipeline as a strict checkpoint configured to fail the build on any warnings.
+**Hadolint** - our Dockerfile linter. It continuously audits our container configurations to enforce best practices, 
+such as ensuring the application runs exclusively as the non-root app user. To enforce these standards over time, it is integrated into our pipeline as a strict checkpoint that fails the build if any warnings occur.
 
 
-**ShellCheck** - our shell script linter. It acts as an automated quality gate by scanning our deployment scripts for syntax errors, deprecated commands, and security flaws 
+**ShellCheck** - our shell script linter. It acts as an automated quality safeguard by scanning our deployment scripts for syntax errors, deprecated commands, and security flaws 
 like injection vulnerabilities. This guarantees that our infrastructure-as-code is both secure and reliable prior to deployment.
 
 
