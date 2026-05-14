@@ -43,7 +43,9 @@ TODO: What do you log in your systems and how do you aggregate logs?
 
 ## Security Assessment
 <!-- Author(s): Joakim -->
-TODO: Brief description of how you security hardened your systems.
+Our application utilizes an automated CI/CD pipeline to continuously harden the system and ensure vulnerabilities are not introduced during development.
+
+
 
 ## Availability and Scaling
 <!-- Author(s): Bondo -->
