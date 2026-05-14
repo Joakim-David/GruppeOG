@@ -61,7 +61,8 @@ such as ensuring the application runs exclusively as the non-root app user. To p
 it is integrated into our pipeline as a strict checkpoint configured to fail the build on any warnings.
 
 
-
+**ShellCheck** - our shell script linter. It acts as an automated quality gate by scanning our deployment scripts for syntax errors, deprecated commands, and security flaws 
+like injection vulnerabilities. This guarantees that our infrastructure-as-code is both secure and reliable prior to deployment.
 
 
 ## Availability and Scaling
