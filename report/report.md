@@ -46,9 +46,9 @@ TODO: What do you log in your systems and how do you aggregate logs?
 Our application utilizes an automated CI/CD pipeline to continuously harden the system and
 ensure vulnerabilities are not introduced during development.
 
-The pipeline utilizes CodeQL, our SAST tool, which notified the developers about a vulnerability to Cross-Site Scripting (XSS) attacks 
+The pipeline  four CodeQL, our SAST tool, which notified the developers about a vulnerability to Cross-Site Scripting (XSS) attacks 
 caused by unsanitized user input in Request.Query["search"]. This vulnerability was patched by applying System.Net.WebUtility.HtmlEncode() 
-to sanitize inputs prior to DOM rendering.
+to ensure the input is treated as plain text rather than exceutable code. 
 
 
 
