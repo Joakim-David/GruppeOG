@@ -213,6 +213,11 @@
         <mxCell id="7cdfzSgo-fd5Nwsij4lV-105" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=80;height=35;" value="Digital Ocean Droplet" vertex="1">
           <mxGeometry height="430" width="560" x="-1300" y="130" as="geometry" />
         </mxCell>
+        <mxCell id="7cdfzSgo-fd5Nwsij4lV-158" edge="1" parent="1" source="7cdfzSgo-fd5Nwsij4lV-108" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-650" y="357.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="7cdfzSgo-fd5Nwsij4lV-108" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" value="Docker Swarm" vertex="1">
           <mxGeometry height="365" width="510" x="-1290" y="175" as="geometry" />
         </mxCell>
