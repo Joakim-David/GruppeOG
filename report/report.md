@@ -19,8 +19,6 @@ TODO: Design and architecture of your ITU-MiniTwit systems.
 
 ## Dependencies
 <!-- Author(s): Jacob F -->
-TODO: All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
-
 The Chirp application is built on .NET 9.0 with ASP.NET Core (Razor Pages). Entity Framework Core 9.0 is used as the ORM, backed by PostgreSQL 17 in production and SQLite for local development. Authentication is     
 handled by ASP.NET Identity for local accounts and GitHub OAuth for third-party login.
 
@@ -49,20 +47,31 @@ TODO: How do you monitor your systems and what precisely do you monitor?
 
 ## Logging
 <!-- Author(s): Jacob F-->
-Our Logs are displayed on our grafana webserver where they can be view under drilldown/logs. We use a stack compromised by grafana, loki and alloy. Alloy is used to collect the logs from the docker containers on the droplet and then ships them to Loki. 
-Loki then stores and index the logs and in the end grafana then uses loki as a datasource to visualise the logs and makes them easily accessible to search and discover.
+Logs are collected, stored, and visualised using a three-component stack: 
+**Grafana Alloy**, **Loki**, and **Grafana**. 
+Alloy runs as a container on the droplet with access to the Docker socket. 
+It reads the stdout and stderr streams of every running container, applies a processing pipeline, and forwards the results to Loki. 
+Loki stores and indexes the logs for a preservation period of seven days. 
+Grafana then queries Loki as a datasource, 
+making the logs accessible for search and exploration under *Drilldown / Logs*.
 
-The logs are aggregated so we have logs from each of the individual chirp servers, Loki, grafana and prometheus. 
+### Log Collection with Alloy
+Alloy uses Docker container metadata obtained via the Docker socket to locate the log files for each container 
+and to determine how to label them. The processing pipeline applies the following steps to all collected logs:
+1. **Service labelling** — container names are mapped to a `service_name` label: both Swarm replicas (`chirp_chirpserver.1.*` and `chirp_chirpserver.2.*`) are labelled `minitwit`, while the remaining containers receive labels matching their role (`loki`, `grafana`, `prometheus`, `alloy`).
+2. **JSON parsing** — for the `minitwit` service, the structured JSON emitted by the application is parsed and the `LogLevel`, `Message`, and `TraceId` fields are extracted. `LogLevel` is promoted to a Loki label, enabling level-based filtering in Grafana.
+3. **Noise reduction** — INFO-level logs from infrastructure containers (Loki, Grafana, Prometheus, Alloy) are dropped before reaching Loki, keeping storage focused on actionable output.
 
-### What we log from chirp
-In program.cs we log every incoming request including the method, path, status code, duration and IP.
+### What the Application Logs
+The Chirp application (`src/Chirp.Web/Program.cs`) is configured to send out structured JSON logs to stdout using .NET's built-in `AddJsonConsole`. 
+Every incoming HTTP request produces a log entry containing the method, path, status code, response duration, and remote IP address. 
+Authentication events — including successful and failed logins, registrations, external (GitHub) logins, 
+and account deletions — are also logged by the ASP.NET Identity pages. Unhandled exceptions produce stack traces on stderr, which Alloy captures and forwards to Loki.
 
-### Alloy 
-With grafana alloy we collect all stdout/stderr from every docker container on the droplet. This includes logs from exceptions and the chirp application
-### Aggregation
-The logs from our two chirp webservers is aggregated under one handle otherwise it is also possible to search the individual containers.
-
-TODO: What do you log in your systems and how do you aggregate logs?
+### Log Aggregation in Docker Swarm
+Because the application runs as two Swarm replicas, both containers emit independent log streams. 
+In Loki these streams are queryable in two ways: filtering by `service_name=minitwit` returns the combined log stream from both replicas, while filtering by the `container` label (e.g. `chirp_chirpserver.2.*`) isolates a single replica. 
+This allows both an aggregated view of all application traffic and per-replica investigation when needed.
 
 ## Security Assessment
 <!-- Author(s): Joakim -->
