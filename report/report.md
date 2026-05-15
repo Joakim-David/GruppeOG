@@ -75,9 +75,9 @@ resource consumption.
 
 ![Business Activity and Error Tracking](./images/BusinessActivityAndErrorTracking.png)
 **Business Activity and Error Tracking** 
-The Business and Activity section extends the monitoring beyond the infrastructure. Cheeps created, follows and new 
+The business activity section extends the monitoring beyond the infrastructure. Cheeps created, follows and new 
 registrations per minute are tracked as graphs, providing a business-level overview of the system, which would be useful
-in a real-world scenario. Error log volume is sourced from loki, shows a visual overview of application exceptions 
+in a real-world scenario. Error log volume is sourced from loki, and shows a visual overview of application exceptions 
 without having to manually inspect the logs. 
 
 ## Logging
