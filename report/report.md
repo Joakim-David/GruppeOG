@@ -15,6 +15,8 @@ header-includes:
 # System's Perspective
 ## Design and Architecture
 <!-- Author(s): Bondo -->
+![Architecture](./diagrams/deployment_diagram/MiniTwit_Deployment_Diagram.png)
+![Docker Swarm](./diagrams/docker%20swarm.png)
 TODO: Design and architecture of your ITU-MiniTwit systems.
 
 ## Dependencies
@@ -148,6 +150,6 @@ NOTE: like 2 senteces about this
 <!-- Link all artifacts: repositories, issue trackers, monitoring/logging systems, etc. -->
 
 - **Repository:** <https://github.com/Joakim-David/GruppeOG>
-- **Chirp URL:** <https://chirpitu.live>
+- **Minitwit URL:** <https://chirpitu.live>
 - **Monitoring:** Grafana at `http://209.38.190.12:3000`
 - **Issue Tracker:** <https://github.com/Joakim-David/GruppeOG/issues>
