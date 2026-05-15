@@ -161,9 +161,10 @@ TODO:
 
 # Use of generative AI
 <!-- Author(s): Joakim  -->
+It was agreed upon that the group would follow ITU's guidelines regardign the use of LLMs during the development 
+of the project this means that whenever an LLM in our case Claude has generated code it should be credited in the commit.  
 
-TOBEDELETED: ITU's rules on the use of generative AI apply for this report too. They are described here and in detail here. Please follow them. For your report that means that you have to state which generative AI tools have been used for which task(s) in your projects. Additionally, describe how generative AI tools have been used and briefly reflect and discuss how they supported or hindered your work process.
-NOTE: like 2 senteces about this
+Both claud and gemini have also been used for debugging and for explaining abstract concepts if needed during development  
 
 ## References
 <!-- Link all artifacts: repositories, issue trackers, monitoring/logging systems, etc. -->
