@@ -41,6 +41,7 @@ TOBEDELETED: This perspective should clarify how code or other artifacts come fr
 
 ## CI/CD Chains
 <!-- Author(s): Emilie -->
+![cicd](./diagrams/pipeline_diagram/cicd-pipeline.drawio.png)
 TODO: A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 
 ## Monitoring
