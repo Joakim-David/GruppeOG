@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="760" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- ===== SECTION BACKGROUNDS ===== -->
+    <mxCell id="bg_pr" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#AEC6CF;dashed=1;strokeWidth=2;opacity=40;" vertex="1" parent="1">
+      <mxGeometry x="155" y="40" width="230" height="580" as="geometry" />
+    </mxCell>
+    <mxCell id="bg_pr_lbl" value="PR Quality Gates" style="text;html=1;align=center;fontStyle=1;fontSize=13;fontColor=#2980B9;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="155" y="44" width="230" height="26" as="geometry" />
+    </mxCell>
+
+    <mxCell id="bg_gate" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;dashed=1;strokeWidth=2;opacity=40;" vertex="1" parent="1">
+      <mxGeometry x="410" y="248" width="180" height="115" as="geometry" />
+    </mxCell>
+
+    <mxCell id="bg_a" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1FFF0;strokeColor=#82b366;dashed=1;strokeWidth=2;opacity=40;" vertex="1" parent="1">
+      <mxGeometry x="630" y="40" width="490" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="bg_a_lbl" value="Track A — Release (release.yml)  ·  trigger: push to main" style="text;html=1;align=center;fontStyle=1;fontSize=11;fontColor=#27AE60;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="630" y="44" width="490" height="24" as="geometry" />
+    </mxCell>
+
+    <mxCell id="bg_b" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF0FF;strokeColor=#9673a6;dashed=1;strokeWidth=2;opacity=40;" vertex="1" parent="1">
+      <mxGeometry x="630" y="265" width="470" height="380" as="geometry" />
+    </mxCell>
+    <mxCell id="bg_b_lbl" value="Track B — Continuous Deployment (Continuous_Deployment_Swarm.yml)  ·  trigger: push to main" style="text;html=1;align=center;fontStyle=1;fontSize=11;fontColor=#8E44AD;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="630" y="269" width="470" height="24" as="geometry" />
+    </mxCell>
+
+    <mxCell id="bg_swarm" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#F9A825;strokeWidth=3;opacity=70;" vertex="1" parent="1">
+      <mxGeometry x="1135" y="40" width="290" height="640" as="geometry" />
+    </mxCell>
+    <mxCell id="bg_swarm_lbl" value="🐳 Docker Swarm Cluster" style="text;html=1;align=center;fontStyle=1;fontSize=14;fontColor=#856404;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="1135" y="48" width="290" height="26" as="geometry" />
+    </mxCell>
+    <mxCell id="bg_swarm_sub" value="DigitalOcean" style="text;html=1;align=center;fontStyle=2;fontSize=11;fontColor=#856404;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="1135" y="72" width="290" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- ===== DEVELOPER ===== -->
+    <mxCell id="dev" value="💻 Developer" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="25" y="290" width="115" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- ===== PR QUALITY GATE BOXES ===== -->
+    <mxCell id="g1" value="&lt;b&gt;.NET (main.yml)&lt;/b&gt;&lt;br&gt;dotnet restore + build&lt;br&gt;Chirp.Web unit tests&lt;br&gt;Chirp.Repositories.Tests&lt;br&gt;Chirp.IntegrationTests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="170" y="70" width="205" height="95" as="geometry" />
+    </mxCell>
+
+    <mxCell id="g2" value="&lt;b&gt;CodeQL (codeql.yml)&lt;/b&gt;&lt;br&gt;C# SAST analysis&lt;br&gt;queries: security-and-quality&lt;br&gt;build-mode: manual" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="170" y="183" width="205" height="90" as="geometry" />
+    </mxCell>
+
+    <mxCell id="g3" value="&lt;b&gt;Hadolint (hadolint.yml)&lt;/b&gt;&lt;br&gt;Dockerfile linter&lt;br&gt;failure-threshold: warning&lt;br&gt;ignore: DL3008" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="170" y="291" width="205" height="90" as="geometry" />
+    </mxCell>
+
+    <mxCell id="g4" value="&lt;b&gt;ShellCheck (shellcheck.yml)&lt;/b&gt;&lt;br&gt;Shell script audit&lt;br&gt;severity: warning&lt;br&gt;suppress: SC2034" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="170" y="399" width="205" height="90" as="geometry" />
+    </mxCell>
+
+    <mxCell id="g5" value="&lt;b&gt;Trivy (trivy.yml)&lt;/b&gt;&lt;br&gt;Container SCA scan&lt;br&gt;Severity: HIGH / CRITICAL&lt;br&gt;exit-code: 1 on findings" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="170" y="507" width="205" height="90" as="geometry" />
+    </mxCell>
+
+    <!-- ===== MERGE GATE ===== -->
+    <mxCell id="gate" value="🔒 Required Status Checks&lt;br&gt;&lt;b&gt;All 5 must pass to merge&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;strokeWidth=2;fontSize=10;fontColor=#BF360C;" vertex="1" parent="1">
+      <mxGeometry x="418" y="258" width="165" height="95" as="geometry" />
+    </mxCell>
+
+    <!-- ===== POST-MERGE FORK ===== -->
+    <mxCell id="mergeNode" value="Merge&lt;br&gt;to main" style="rhombus;whiteSpace=wrap;html=1;fillColor=#27AE60;fontColor=#ffffff;strokeColor=#1E8449;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="612" y="278" width="82" height="65" as="geometry" />
+    </mxCell>
+
+    <!-- ===== TRACK A: RELEASE ===== -->
+    <mxCell id="relBox" value="&lt;b&gt;release.yml&lt;/b&gt;&lt;br&gt;dotnet restore → build (Release config)&lt;br&gt;Run unit + integration tests&lt;br&gt;dotnet publish: linux-x64, self-contained&lt;br&gt;PublishSingleFile=true  →  ./publish" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="645" y="65" width="250" height="110" as="geometry" />
+    </mxCell>
+
+    <mxCell id="ghRel" value="GitHub Releases&lt;br&gt;&lt;b&gt;vX.X Release&lt;/b&gt;&lt;br&gt;chirp-executable&lt;br&gt;(linux-x64 binary)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#E8D5F5;strokeColor=#9673a6;strokeWidth=2;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="945" y="65" width="155" height="110" as="geometry" />
+    </mxCell>
+
+    <!-- ===== TRACK B: SWARM CD ===== -->
+    <mxCell id="dockerBuild" value="&lt;b&gt;Docker Buildx&lt;/b&gt;&lt;br&gt;Login to Docker Hub (secrets)&lt;br&gt;docker buildx build + push&lt;br&gt;tags: minitwitimage:latest&lt;br&gt;cache-from/to: webbuildcache (registry)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="645" y="308" width="230" height="110" as="geometry" />
+    </mxCell>
+
+    <mxCell id="dockerHub" value="Docker Hub Registry&lt;br&gt;&lt;b&gt;minitwitimage:latest&lt;/b&gt;&lt;br&gt;minitwitimage:webbuildcache" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="660" y="460" width="195" height="95" as="geometry" />
+    </mxCell>
+
+    <mxCell id="sshScp" value="&lt;b&gt;Configure SSH + SCP Transfer&lt;/b&gt;&lt;br&gt;Write SSH_KEY_SWARM → ~/.ssh/do_ssh_key&lt;br&gt;SCP → server:&lt;br&gt;chirp_stack.yml · grafana/ · loki/&lt;br&gt;alloy/ · monitoring/prometheus.yml" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="905" y="308" width="185" height="120" as="geometry" />
+    </mxCell>
+
+    <!-- ===== SWARM CLUSTER INTERNALS ===== -->
+    <mxCell id="deployCmd" value="&lt;b&gt;SSH Orchestration&lt;/b&gt;&lt;br&gt;docker login + pull minitwitimage:latest&lt;br&gt;docker stack deploy -c chirp_stack.yml chirp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;strokeWidth=2;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1153" y="98" width="252" height="75" as="geometry" />
+    </mxCell>
+
+    <mxCell id="svc_app" value="chirp_chirpserver&lt;br&gt;&lt;i&gt;--update-parallelism 0 --force&lt;/i&gt;&lt;br&gt;&lt;i&gt;(rolling update, all replicas)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1153" y="205" width="252" height="75" as="geometry" />
+    </mxCell>
+
+    <mxCell id="svc_graf" value="chirp_grafana" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1153" y="318" width="112" height="48" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_prom" value="chirp_prometheus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1293" y="318" width="112" height="48" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_loki" value="chirp_loki" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1153" y="384" width="112" height="48" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_alloy" value="chirp_alloy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1293" y="384" width="112" height="48" as="geometry" />
+    </mxCell>
+
+    <mxCell id="svc_db" value="PostgreSQL&lt;br&gt;(POSTGRES_PSW secret)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1188" y="458" width="165" height="80" as="geometry" />
+    </mxCell>
+
+    <mxCell id="runtimeNote" value="Runtime: Ubuntu Chiseled (distroless-like base)" style="text;html=1;align=center;fontSize=8;fontStyle=2;fontColor=#888888;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="1145" y="558" width="265" height="22" as="geometry" />
+    </mxCell>
+    <mxCell id="svcUpdateNote" value="docker service update --force:&lt;br&gt;grafana · prometheus · loki · alloy" style="text;html=1;align=center;fontSize=8;fontColor=#666666;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="1145" y="580" width="265" height="38" as="geometry" />
+    </mxCell>
+    <mxCell id="dispatchNote" value="Also triggered manually via workflow_dispatch" style="text;html=1;align=center;fontSize=8;fontStyle=2;fontColor=#888888;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+      <mxGeometry x="1145" y="618" width="265" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- ===== LIVE PRODUCTION ===== -->
+    <mxCell id="liveApp" value="🌐 Live Production&lt;br&gt;&lt;b&gt;Chirp MiniTwit&lt;/b&gt;&lt;br&gt;DigitalOcean" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#27AE60;strokeWidth=3;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="1500" y="283" width="175" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- ===== ARROWS ===== -->
+
+    <!-- Developer → gate boxes (fan-out, PR trigger) -->
+    <mxCell id="e_dev_g1" value="Pull Request to main" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=9;fontStyle=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="dev" target="g1" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_dev_g2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="dev" target="g2" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_dev_g3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="dev" target="g3" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_dev_g4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="dev" target="g4" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_dev_g5" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="dev" target="g5" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Gate boxes → Merge Gate -->
+    <mxCell id="e_g1_gate" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="g1" target="gate" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_g2_gate" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="g2" target="gate" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_g3_gate" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="g3" target="gate" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_g4_gate" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="g4" target="gate" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_g5_gate" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="g5" target="gate" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Gate → merge fork -->
+    <mxCell id="e_gate_merge" value="Merge approved ✓" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#27AE60;strokeWidth=2;fontStyle=1;fontSize=10;" edge="1" source="gate" target="mergeNode" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Fork → Track A -->
+    <mxCell id="e_merge_rel" value="on: push main" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#27AE60;strokeWidth=2;fontSize=9;fontStyle=2;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" source="mergeNode" target="relBox" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Fork → Track B -->
+    <mxCell id="e_merge_docker" value="on: push main" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9673a6;strokeWidth=2;fontSize=9;fontStyle=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="mergeNode" target="dockerBuild" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Track A: Release → GitHub Releases -->
+    <mxCell id="e_rel_gh" value="Upload artifact" style="edgeStyle=orthogonalEdgeStyle;html=1;fontStyle=2;fontSize=9;" edge="1" source="relBox" target="ghRel" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Track B: Docker Build → Docker Hub -->
+    <mxCell id="e_build_hub" value="docker push" style="edgeStyle=orthogonalEdgeStyle;html=1;fontStyle=2;fontSize=9;strokeColor=#b85450;" edge="1" source="dockerBuild" target="dockerHub" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Track B: Docker Build → SSH/SCP -->
+    <mxCell id="e_build_ssh" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9673a6;" edge="1" source="dockerBuild" target="sshScp" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- SSH/SCP → Deploy in Swarm -->
+    <mxCell id="e_ssh_deploy" value="SCP configs +&lt;br&gt;SSH deploy" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#F9A825;strokeWidth=2;fontStyle=2;fontSize=9;" edge="1" source="sshScp" target="deployCmd" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Docker Hub → Deploy (pull) -->
+    <mxCell id="e_hub_deploy" value="pull image" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b85450;fontStyle=2;fontSize=9;" edge="1" source="dockerHub" target="deployCmd" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Deploy → chirpserver -->
+    <mxCell id="e_deploy_app" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#6c8ebf;" edge="1" source="deployCmd" target="svc_app" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- chirpserver → monitoring services -->
+    <mxCell id="e_app_graf" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#82b366;" edge="1" source="svc_app" target="svc_graf" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_app_prom" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#82b366;" edge="1" source="svc_app" target="svc_prom" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_graf_loki" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#82b366;" edge="1" source="svc_graf" target="svc_loki" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_prom_alloy" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#82b366;" edge="1" source="svc_prom" target="svc_alloy" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- chirpserver → PostgreSQL -->
+    <mxCell id="e_app_db" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#b85450;" edge="1" source="svc_app" target="svc_db" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Swarm cluster → Live App -->
+    <mxCell id="e_swarm_live" value="Rolling update complete ✓" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#27AE60;strokeWidth=3;fontStyle=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="svc_app" target="liveApp" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>

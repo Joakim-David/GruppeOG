@@ -66,7 +66,26 @@ TODO: What do you log in your systems and how do you aggregate logs?
 
 ## Security Assessment
 <!-- Author(s): Joakim -->
-TODO: Brief description of how you security hardened your systems.
+Our application utilizes an automated CI/CD pipeline to continuously harden the system and
+ensure vulnerabilities are not introduced during development.
+
+The pipeline uses four Automated Quality Gates CodeQL, Trivy, Hadolint and shellcheck.
+
+**CodeQL** - our SAST tool, which notified the developers about a vulnerability to Cross-Site Scripting (XSS) attacks 
+caused by unsanitized user input in Request.Query["search"]. This vulnerability was patched by applying System.Net.WebUtility.HtmlEncode() 
+to ensure the input is treated as plain text rather than exceutable code. 
+
+**Trivy** - our Software Composition Analysis (SCA) tool and vulnerability scanner. Initial scans of our standard Docker base images revealed an unnecessarily large attack surface.
+To mitigate this, we transitioned to the minimal aspnet:9.0-noble-chiseled base image, which removes standard OS utilities (like bash)
+to restrict attacker mobility. Trivy now acts as a strict quality gate by enforcing an --exit-code 1 policy, blocking deployments if any high or critical vulnerabilities are detected.
+
+**Hadolint** - our Dockerfile linter. It continuously audits our container configurations to enforce best practices, 
+such as ensuring the application runs exclusively as the non-root app user. To enforce these standards over time, it is integrated into our pipeline as a strict checkpoint that fails the build if any warnings occur.
+
+
+**ShellCheck** - our shell script linter. It acts as an automated quality safeguard by scanning our deployment scripts for syntax errors, deprecated commands, and security flaws 
+like injection vulnerabilities. This guarantees that our infrastructure-as-code is both secure and reliable prior to deployment.
+
 
 ## Availability and Scaling
 <!-- Author(s): Bondo -->
