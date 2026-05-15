@@ -44,22 +44,41 @@ TOBEDELETED: This perspective should clarify how code or other artifacts come fr
 TODO: A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 
 ## Monitoring
-<!-- Author(s): Jacob H-->
-TODO: How do you monitor your systems and what precisely do you monitor?
-<br>
 Our Chirp application's monitoring stack consists of Prometheus, Grafana, Loki and Grafana Alloy. These are deployed as
 services within the Docker Swarm. All configuration regarding the monitoring stack is stored as code and updated
-automatically on every push to main via the Continuous_Deployment_Swarm.yml workflow.
+automatically on every push to main via the Continuous_Deployment_Swarm.yml workflow. 
 <br>
-The application is setup for whitebox monitoring. It exposes a /metrics endpoint from which Prometheus pulls data every
+Following the Turnbull's
+"The Art of Monitoring", our monitoring setup sits between the reactive and proactive level, leaning more towards the 
+proactive level. The instrumentation is fully automated and code-driven, with metrics covering both application 
+performance and business outcomes. However, the absence of active alerting means the dashboards are checked reactively 
+rather than triggering automatic responses. 
+<br>
+The application is set up for whitebox monitoring. It exposes a /metrics endpoint from which Prometheus pulls data every
 five seconds. Custom metrics include HTTP request counts and response durations, CPU load, working memory and
 business-level counters.
 <br>
-The Grafana dashboard is organised into four sections across three figures.
+The Grafana dashboard is organized into four sections, explained in the following three pictures:
 ![App Health and HTTP performance](./images/AppHealthAndHTTPPerformance.png)
+![HTTPRequestRate](./images/HTTPRequestRateByStatusCode.png)
 **App Health and HTTP Performance** is the primary operational view, that shows live app status. It includes panels for
-HTTP request rates per second and HTTP error rates second, broken down by 4xx and 5xx status codes, which gives immediate
-visibility into load and fault distribution. 
+HTTP request rates per second and HTTP error rates second, broken down by 4xx and 5xx status codes, which gives
+visibility into the distribution of load and faults. Response time percentiles (p50, p90, p99) and per-endpoint average 
+latency reflect the principle of monitoring close to the user, which allows for assessment of the user experience. 
+
+![HTTP Request Rate by Status Code and Process & Runtime](./images/ProcessAndRuntime.png)
+**Process & Runtime**
+The process and runtime section shows CPU Usage, working set memory, garbage collection heap size and thread count. CPU 
+usage and working set memory are also shown as a graph over time, to correlate the behaviour of the application to the 
+resource consumption. 
+
+![Business Activity and Error Tracking](./images/BusinessActivityAndErrorTracking.png)
+**Business Activity and Error Tracking** 
+The Business and Activity section extends the monitoring beyond the infrastructure. Cheeps created, follows and new 
+registrations per minute are tracked as graphs, providing a business-level overview of the system, which would be useful
+in a real-world scenario. Error log volume is sourced from loki, shows a visual overview of application exceptions 
+without having to manually inspect the logs. 
+
 ## Logging
 <!-- Author(s): Jacob F-->
 Our Logs are displayed on our grafana webserver where they can be view under drilldown/logs. We use a stack compromised by grafana, loki and alloy. Alloy is used to collect the logs from the docker containers on the droplet and then ships them to Loki. 
