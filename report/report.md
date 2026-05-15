@@ -71,17 +71,20 @@ making the logs accessible for search and exploration under *Drilldown / Logs*.
 ![Logging dashboard](./images/Logging.png)
 
 ### Log Collection with Alloy
-Alloy queries the Docker socket to discover running containers and their log file locations. Its processing pipeline: maps container names to a `service_name` label (both Swarm replicas become `minitwit`); parses the structured JSON from `minitwit` logs, promoting `LogLevel` to a Loki label for filtering; and drops INFO-level logs from infrastructure containers to reduce noise.
+Alloy queries the Docker socket to discover running containers and their log file locations. 
+Its processing pipeline maps container names to a `service_name` label so both Swarm replicas become `minitwit`. 
+It then parses the JSON from `minitwit` logs, promoting `LogLevel` to a Loki label for filtering.
 
 ### What the Application Logs
 The application emits structured JSON logs to stdout via .NET's `AddJsonConsole`. 
 Each HTTP request produces a log entry with method, path, status code, duration, and remote IP. 
 Authentication events (login, registration, account deletion) are logged by the ASP.NET Identity pages, 
-and unhandled exceptions produce stack traces on stderr, which both captured by Alloy.
+and unhandled exceptions produce stack traces on stderr, which are both captured by Alloy.
 
 ### Log Aggregation in Docker Swarm
 Because the application runs as two Swarm replicas, both containers emit independent log streams. 
-In Loki these streams are queryable in two ways: filtering by `service_name=minitwit` returns the combined log stream from both replicas, while filtering by the `container` label (e.g. `chirp_chirpserver.2.*`) isolates a single replica. 
+In Loki these streams are queryable in two ways: filtering by `service_name=minitwit` which returns the combined log stream from both replicas or
+ filtering by the `container` label (e.g. `chirp_chirpserver.2.*`) that isolates a single replica. 
 This allows both an aggregated view of all application traffic and per-replica investigation when needed.
 
 ## Security Assessment
