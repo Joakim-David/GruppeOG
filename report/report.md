@@ -69,7 +69,7 @@ latency reflect the principle of monitoring close to the user, which allows for 
 
 ![HTTP Request Rate by Status Code and Process & Runtime](./images/ProcessAndRuntime.png)
 **Process & Runtime**
-The process and runtime section shows CPU Usage, working set memory, garbage collection heap size and thread count. CPU 
+The process and runtime section shows CPU Usage, working set memory, garbage collection heap size and thread count as gauges, where CPU 
 usage and working set memory are also shown as a graph over time, to correlate the behaviour of the application to the 
 resource consumption. 
 
