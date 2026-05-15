@@ -59,7 +59,7 @@ The application is set up for whitebox monitoring. It exposes a /metrics endpoin
 five seconds. Custom metrics include HTTP request counts and response durations, CPU load, working memory and
 business-level counters.
 <br>
-The Grafana dashboard is organized into four sections, explained in the following three pictures:
+The Grafana dashboard is organized into four sections, explained in the following pictures:
 ![App Health and HTTP performance](./images/AppHealthAndHTTPPerformance.png)
 ![HTTPRequestRate](./images/HTTPRequestRateByStatusCode.png)
 **App Health and HTTP Performance** is the primary operational view, that shows live app status. It includes panels for
