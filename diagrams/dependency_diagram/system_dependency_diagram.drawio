@@ -1,0 +1,98 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="System Dependencies" id="system-dependencies">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- GitHub Actions -->
+        <mxCell id="gh" value="GitHub Actions CI/CD&#xa;Build · Test · CodeQL · Trivy · Hadolint · ShellCheck · Deploy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="30" width="340" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Docker Hub -->
+        <mxCell id="dh" value="Docker Hub" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="100" y="160" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub OAuth -->
+        <mxCell id="oauth" value="GitHub OAuth" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="30" y="420" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- DigitalOcean container -->
+        <mxCell id="do" value="DigitalOcean (Terraform)" style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="300" y="150" width="620" height="420" as="geometry" />
+        </mxCell>
+
+        <!-- Docker Swarm container -->
+        <mxCell id="sw" value="Docker Swarm" style="swimlane;startSize=25;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="do">
+          <mxGeometry x="20" y="50" width="580" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- App -->
+        <mxCell id="app" value="Chirp Web App ×2&#xa;.NET 9.0 / ASP.NET Core" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" vertex="1" parent="sw">
+          <mxGeometry x="20" y="60" width="190" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Alloy -->
+        <mxCell id="alloy" value="Grafana Alloy&#xa;Log Shipper" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="sw">
+          <mxGeometry x="240" y="60" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Loki -->
+        <mxCell id="loki" value="Loki&#xa;Log Storage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="sw">
+          <mxGeometry x="410" y="60" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Prometheus -->
+        <mxCell id="prom" value="Prometheus&#xa;Metrics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="sw">
+          <mxGeometry x="240" y="170" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Grafana -->
+        <mxCell id="graf" value="Grafana&#xa;Visualization" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="sw">
+          <mxGeometry x="410" y="170" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- PostgreSQL -->
+        <mxCell id="pg" value="PostgreSQL 17&#xa;Managed DB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="do">
+          <mxGeometry x="20" y="340" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" value="docker push" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="gh" target="dh" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="terraform apply" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="gh" target="do" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="docker stack deploy" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="dh" target="app" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="auth" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="oauth" target="app" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="stdout logs" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="app" target="alloy" parent="sw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="push logs" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="alloy" target="loki" parent="sw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="metrics" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="app" target="prom" parent="sw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="datasource" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="loki" target="graf" parent="sw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="datasource" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="prom" target="graf" parent="sw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="queries" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="app" target="pg" parent="do">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
