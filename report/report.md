@@ -156,8 +156,18 @@ NOTE: Migration to postgres
 TODO: From docker compose to terraform and docker swarm.
 
 ## maintenance
-<!-- Author(s): Jacob eller Jacob -->
-TODO: 
+<!-- Author(s): Jacob H -->
+A thing we learned regarding maintenence was the importance of having alerts in the monitoring aspect of the 
+application. Towards the end of the course, we had made a mistake on our server, resulting in our application not
+working for 4 days. We didn't notice since we don't have any form of alert system set up and therefore rely solely on 
+the developers noticing it by going into the grafana dashboard. This resulted ina secondary issue: because new user 
+registrations were failing during the downtime, the simulator continued attempting to access endpoints for users 
+that did not exist in our system. Inspecting the logs revealed that the same set of users were repeatedly generating
+errors, which caused our error metrics to scale significantly. Had we implemented Grafana alerting
+on HTTP error rate thresholds or registration failure rates, we would likely have caught the outage within minutes
+rather than days. We didn't implement this on time, but this is definetely something we would prioritize early in any 
+future project, as the downtime illustrated that reactive dashboard-based monitoring is insufficient on its own when 
+no one is actively watching. 
 
 # Use of generative AI
 <!-- Author(s): Joakim  -->
