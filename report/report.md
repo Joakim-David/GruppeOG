@@ -45,6 +45,7 @@ TOBEDELETED: This perspective should clarify how code or other artifacts come fr
 TODO: A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
 
 ## Monitoring
+<!-- Author(s): Jacob H-->
 Our Chirp application's monitoring stack consists of Prometheus, Grafana, Loki and Grafana Alloy. These are deployed as
 services within the Docker Swarm. All configuration regarding the monitoring stack is stored as code and updated
 automatically on every push to main via the Continuous_Deployment_Swarm.yml workflow. 
@@ -170,11 +171,10 @@ future project, as the downtime illustrated that reactive dashboard-based monito
 no one is actively watching. 
 
 # Use of generative AI
-<!-- Author(s): Joakim  -->
-It was agreed upon that the group would follow ITU's guidelines regardign the use of LLMs during the development 
-of the project this means that whenever an LLM in our case Claude has generated code it should be credited in the commit.  
-
-Both claud and gemini have also been used for debugging and for explaining abstract concepts if needed during development  
+<!-- Author(s): Joakim + Jacob H -->
+The group agreed to follow ITU's guidelines regarding the use of LLMs during the development 
+of the project. This means that whenever an LLM, in our case primarily Claude, has generated code, it was credited in the corresponding commit. 
+Claude and Gemini were also used for debugging adn for explaining abstract concepts during development. 
 
 ## References
 <!-- Link all artifacts: repositories, issue trackers, monitoring/logging systems, etc. -->
